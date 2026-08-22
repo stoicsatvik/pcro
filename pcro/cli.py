@@ -2,10 +2,20 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import asdict
 from pathlib import Path
 
+from .hardlab import run_hardlab
+from .jed_contract import (
+    ATTACK_ELITE_RAW,
+    DEFAULT_MAX_TOOL_HOPS,
+    MAX_REPLAY_FINDINGS,
+    MAX_REPLAY_MESSAGES_PER_FINDING,
+    SEVERITY_WEIGHT,
+)
 from .model import Trace
 from .planner import rank_traces, select_under_budget
+from .reachability import public_u2a_certificate
 from .synthetic import generate_traces
 
 
@@ -53,6 +63,22 @@ def _optimize(args: argparse.Namespace) -> None:
     print(json.dumps(result, indent=2))
 
 
+def _hardlab(args: argparse.Namespace) -> None:
+    print(json.dumps(run_hardlab(max_events=args.max_events, top=args.top), indent=2))
+
+
+def _contract(_: argparse.Namespace) -> None:
+    result = {
+        "severity_weight": SEVERITY_WEIGHT,
+        "attack_elite_raw": ATTACK_ELITE_RAW,
+        "max_replay_findings": MAX_REPLAY_FINDINGS,
+        "max_messages_per_finding": MAX_REPLAY_MESSAGES_PER_FINDING,
+        "default_max_tool_hops": DEFAULT_MAX_TOOL_HOPS,
+        "public_u2a_reachability": asdict(public_u2a_certificate()),
+    }
+    print(json.dumps(result, indent=2))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="pcro")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -71,6 +97,14 @@ def build_parser() -> argparse.ArgumentParser:
     optimize.add_argument("path")
     optimize.add_argument("--budget-ms", type=int, required=True)
     optimize.set_defaults(func=_optimize)
+
+    hardlab = sub.add_parser("hardlab", help="run abstract evaluator/guardrail hard tests")
+    hardlab.add_argument("--max-events", type=int, default=3, choices=range(1, 6))
+    hardlab.add_argument("--top", type=int, default=20)
+    hardlab.set_defaults(func=_hardlab)
+
+    contract = sub.add_parser("contract", help="print the pinned public benchmark contract")
+    contract.set_defaults(func=_contract)
 
     return parser
 

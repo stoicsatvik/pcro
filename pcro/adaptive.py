@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from math import inf
 from typing import Iterable, Sequence
 
 from .bandit import Arm
@@ -18,7 +17,7 @@ from .model import Trace
 from .surrogate import OnlineLogisticRanker
 
 FEATURE_NAMES = (
-    "bias_length",
+    "trace_length",
     "untrusted_fraction",
     "share_fraction",
     "exec_fraction",
@@ -98,6 +97,12 @@ def trace_features(trace: Trace) -> tuple[float, ...]:
     )
 
 
+def context_key(family: str, model: str = "generic", guardrail: str = "generic") -> str:
+    if model == "generic" and guardrail == "generic":
+        return family
+    return f"{model}|{guardrail}|{family}"
+
+
 class AdaptiveResearchLoop:
     """Bayesian family selection + online success surrogate + failure atlas."""
 
@@ -106,14 +111,14 @@ class AdaptiveResearchLoop:
         self.surrogate = OnlineLogisticRanker(len(FEATURE_NAMES), learning_rate=0.05)
         self.failures = FailureAtlas()
 
-    def _arm(self, family: str, reward: float, cost_ms: float) -> Arm:
-        if family not in self.arms:
-            self.arms[family] = Arm(
-                name=family,
+    def _arm(self, key: str, reward: float, cost_ms: float) -> Arm:
+        if key not in self.arms:
+            self.arms[key] = Arm(
+                name=key,
                 reward_if_success=max(0.0, reward),
                 expected_cost_ms=max(1.0, cost_ms),
             )
-        arm = self.arms[family]
+        arm = self.arms[key]
         arm.reward_if_success = max(arm.reward_if_success, reward)
         return arm
 
@@ -125,24 +130,33 @@ class AdaptiveResearchLoop:
         success: bool,
         replay_cost_ms: float | None = None,
         failure_stage: str | None = None,
+        model: str = "generic",
+        guardrail: str = "generic",
     ) -> None:
         ensemble = score_ensemble(trace)
         cost = float(replay_cost_ms if replay_cost_ms is not None else trace.replay_cost_ms)
-        arm = self._arm(family, ensemble.mean_reward, cost)
+        key = context_key(family, model, guardrail)
+        arm = self._arm(key, ensemble.mean_reward, cost)
         arm.observe(success, cost)
         self.surrogate.update(trace_features(trace), int(success))
         if not success:
-            self.failures.observe(family, failure_stage or "unknown")
+            self.failures.observe(key, failure_stage or "unknown")
 
     def rank(
-        self, candidates: Iterable[tuple[str, Trace]], *, pessimism: float = 0.5
+        self,
+        candidates: Iterable[tuple[str, Trace]],
+        *,
+        pessimism: float = 0.5,
+        model: str = "generic",
+        guardrail: str = "generic",
     ) -> list[RankedExperiment]:
         ranked: list[RankedExperiment] = []
         for family, trace in candidates:
             ensemble = score_ensemble(trace)
             features = trace_features(trace)
             p_model = self.surrogate.predict_proba(features)
-            arm = self._arm(family, ensemble.mean_reward, trace.replay_cost_ms)
+            key = context_key(family, model, guardrail)
+            arm = self._arm(key, ensemble.mean_reward, trace.replay_cost_ms)
             p_family = arm.lower_confidence_success() if pessimism > 0 else arm.posterior_mean
             predicted = (1.0 - pessimism) * p_model + pessimism * p_family
             robust_reward = 0.5 * ensemble.cvar_reward + 0.5 * ensemble.worst_reward
@@ -161,8 +175,14 @@ class AdaptiveResearchLoop:
             )
         return sorted(ranked, key=lambda row: row.acquisition, reverse=True)
 
-    def next_candidate(self, candidates: Sequence[tuple[str, Trace]]) -> RankedExperiment:
-        ranked = self.rank(candidates)
+    def next_candidate(
+        self,
+        candidates: Sequence[tuple[str, Trace]],
+        *,
+        model: str = "generic",
+        guardrail: str = "generic",
+    ) -> RankedExperiment:
+        ranked = self.rank(candidates, model=model, guardrail=guardrail)
         if not ranked:
             raise ValueError("no candidates")
         return ranked[0]

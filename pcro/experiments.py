@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -17,6 +17,14 @@ class ExperimentRecord:
     success: bool
     failure_stage: str | None = None
     notes: str = ""
+    family: str = "unknown"
+    model: str = "unknown"
+    guardrail: str = "unknown"
+    evaluator_version: str = "unknown"
+    predicate_reward: float = 0.0
+    cell_hash: str | None = None
+    features: tuple[float, ...] = ()
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class JsonlExperimentStore:
@@ -35,3 +43,17 @@ class JsonlExperimentStore:
             return []
         with self.path.open("r", encoding="utf-8") as handle:
             return [json.loads(line) for line in handle if line.strip()]
+
+    def summarize(self) -> dict[str, Any]:
+        rows = self.read_all()
+        successes = sum(bool(row.get("success")) for row in rows)
+        total_cost = sum(int(row.get("replay_cost_ms", 0)) for row in rows)
+        total_reward = sum(float(row.get("predicate_reward", 0.0)) for row in rows)
+        return {
+            "experiments": len(rows),
+            "successes": successes,
+            "success_rate": successes / len(rows) if rows else 0.0,
+            "total_replay_cost_ms": total_cost,
+            "total_predicate_reward": total_reward,
+            "reward_per_second": total_reward / max(0.001, total_cost / 1000.0),
+        }
