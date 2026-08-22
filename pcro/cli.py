@@ -5,6 +5,8 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from .benchmark_manifest import manifest_dict
+from .guardrail_lab import score_ensemble
 from .hardlab import run_hardlab
 from .jed_contract import (
     ATTACK_ELITE_RAW,
@@ -14,8 +16,11 @@ from .jed_contract import (
     SEVERITY_WEIGHT,
 )
 from .model import Trace
+from .multiobjective import ObjectivePoint, pareto_front
 from .planner import rank_traces, select_under_budget
+from .properties import run_property_suite
 from .reachability import public_u2a_certificate
+from .semantic_validity import semantic_evidence
 from .synthetic import generate_traces
 
 
@@ -79,6 +84,44 @@ def _contract(_: argparse.Namespace) -> None:
     print(json.dumps(result, indent=2))
 
 
+def _manifest(_: argparse.Namespace) -> None:
+    print(json.dumps(manifest_dict(), indent=2))
+
+
+def _properties(args: argparse.Namespace) -> None:
+    print(json.dumps(run_property_suite(args.seeds), indent=2))
+
+
+def _frontier(args: argparse.Namespace) -> None:
+    traces = _load(args.path)
+    lookup = {trace.trace_id: trace for trace in traces}
+    points: list[ObjectivePoint] = []
+    for trace in traces:
+        ensemble = score_ensemble(trace)
+        robust = 0.5 * ensemble.cvar_reward + 0.5 * ensemble.worst_reward
+        points.append(
+            ObjectivePoint(
+                candidate_id=trace.trace_id,
+                public_reward=ensemble.public_reward,
+                robust_reward=robust,
+                semantic_validity=semantic_evidence(trace).score,
+                replay_cost_ms=trace.replay_cost_ms,
+            )
+        )
+    front = pareto_front(points)
+    rows = []
+    for point in front:
+        trace = lookup[point.candidate_id]
+        rows.append(
+            {
+                **asdict(point),
+                "tools": [event.name for event in trace.events],
+            }
+        )
+    rows.sort(key=lambda row: (row["robust_reward"], row["public_reward"]), reverse=True)
+    print(json.dumps(rows, indent=2))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="pcro")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -105,6 +148,17 @@ def build_parser() -> argparse.ArgumentParser:
 
     contract = sub.add_parser("contract", help="print the pinned public benchmark contract")
     contract.set_defaults(func=_contract)
+
+    manifest = sub.add_parser("manifest", help="print source/hosted evaluator version facts")
+    manifest.set_defaults(func=_manifest)
+
+    properties = sub.add_parser("properties", help="run deterministic metamorphic property tests")
+    properties.add_argument("--seeds", type=int, default=200)
+    properties.set_defaults(func=_properties)
+
+    frontier = sub.add_parser("frontier", help="show non-dominated score/robustness/cost traces")
+    frontier.add_argument("path")
+    frontier.set_defaults(func=_frontier)
 
     return parser
 
