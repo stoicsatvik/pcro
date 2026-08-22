@@ -17,6 +17,7 @@ from .jed_contract import (
 )
 from .model import Trace
 from .multiobjective import ObjectivePoint, pareto_front
+from .parity import run_random_parity
 from .planner import rank_traces, select_under_budget
 from .properties import run_property_suite
 from .reachability import public_u2a_certificate
@@ -92,6 +93,10 @@ def _properties(args: argparse.Namespace) -> None:
     print(json.dumps(run_property_suite(args.seeds), indent=2))
 
 
+def _parity(args: argparse.Namespace) -> None:
+    print(json.dumps(run_random_parity(args.seeds).to_dict(), indent=2))
+
+
 def _frontier(args: argparse.Namespace) -> None:
     traces = _load(args.path)
     lookup = {trace.trace_id: trace for trace in traces}
@@ -112,12 +117,7 @@ def _frontier(args: argparse.Namespace) -> None:
     rows = []
     for point in front:
         trace = lookup[point.candidate_id]
-        rows.append(
-            {
-                **asdict(point),
-                "tools": [event.name for event in trace.events],
-            }
-        )
+        rows.append({**asdict(point), "tools": [event.name for event in trace.events]})
     rows.sort(key=lambda row: (row["robust_reward"], row["public_reward"]), reverse=True)
     print(json.dumps(rows, indent=2))
 
@@ -155,6 +155,10 @@ def build_parser() -> argparse.ArgumentParser:
     properties = sub.add_parser("properties", help="run deterministic metamorphic property tests")
     properties.add_argument("--seeds", type=int, default=200)
     properties.set_defaults(func=_properties)
+
+    parity = sub.add_parser("parity", help="compare PCRO mirror with installed aicomp_sdk")
+    parity.add_argument("--seeds", type=int, default=200)
+    parity.set_defaults(func=_parity)
 
     frontier = sub.add_parser("frontier", help="show non-dominated score/robustness/cost traces")
     frontier.add_argument("path")
