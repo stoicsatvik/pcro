@@ -12,6 +12,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[dev]'
       - run: ruff check .
       - run: pytest
+      - run: pcro properties --seeds 500
+
+  jed-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - name: Install PCRO and pinned public JED SDK source
+        run: |
+          python -m pip install -e '.[dev]'
+          python -m pip install 'git+https://github.com/mbhatt1/competitionscratch.git@30c769419a09f3dc64d5606a0a097b8a2a61c110'
+      - name: Run randomized evaluator parity
+        run: |
+          python - <<'PY'
+          from pcro.parity import run_random_parity
+          report = run_random_parity(1000)
+          print(report.to_dict())
+          if not report.passed:
+              raise SystemExit(1)
+          PY
