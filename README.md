@@ -6,6 +6,26 @@ PCRO does not start from prompt generation. It starts from the executable evalua
 
 > Scope: deterministic local/public benchmark environments. The project does not automate attacks against third-party systems or bypass real-world access controls.
 
+## Kaggle submission
+
+The repository now contains a self-contained root [`attack.py`](attack.py) implementing the official `AttackAlgorithm` contract for the **AI Agent Security - Multi-Step Tool Attacks** benchmark.
+
+The submission search currently combines:
+
+- deterministic seed families for the benchmark fixture surface;
+- trace-guided sequence mutation rather than one-shot prompt enumeration;
+- exact public predicate severity weights during discovery;
+- score-cell archiving and replay-cost-aware candidate ranking;
+- adaptive UCB allocation toward families that are producing validated findings;
+- conservative down-ranking of known public-guardrail taint shapes;
+- replay-prefix ordering so high-density findings are returned first if replay time expires.
+
+With the pinned public SDK installed, validate the artifact with:
+
+```bash
+aicomp validate redteam attack.py
+```
+
 ## Why this architecture
 
 The public JED scorer is highly structured: predicate events have exponential severity weights, score-cell novelty is comparatively small, findings are replayed from scratch, replay count/message/tool-hop limits are explicit, and guardrail semantics can make some predicate paths unreachable. Training a neural generator before mirroring those contracts would simply learn simulator mistakes faster.
@@ -96,4 +116,4 @@ See [`docs/BENCHMARK_FINDINGS.md`](docs/BENCHMARK_FINDINGS.md). Important correc
 
 ## Status
 
-`v0.2`: executable benchmark contract laboratory + guardrail reachability + robust adaptive learning stack.
+`v0.3-dev`: executable benchmark contract laboratory + Kaggle submission adapter + replay-aware adaptive search.
