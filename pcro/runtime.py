@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Iterable
+from typing import Iterable, Sequence
 
 
 @dataclass
@@ -59,12 +59,7 @@ class ScheduledPrefix:
 
 
 class ReplayScheduler:
-    """Order findings so a replay timeout preserves the strongest expected prefix.
-
-    The evaluator processes candidates sequentially. ``prefix_for_budget`` therefore stops at the
-    first candidate that no longer fits the conservative remaining budget; it never skips that
-    candidate and pretends later findings could still run.
-    """
+    """Build and evaluate candidate orderings under replay-time uncertainty."""
 
     def __init__(self, max_findings: int = 2_000) -> None:
         if max_findings <= 0:
@@ -76,19 +71,20 @@ class ReplayScheduler:
             : self.max_findings
         ]
 
-    def prefix_for_budget(
+    def simulate_prefix(
         self,
-        options: Iterable[ReplayOption],
+        ordered_options: Sequence[ReplayOption],
         budget_ms: float,
         *,
         z: float = 1.2815515655446004,
     ) -> ScheduledPrefix:
+        """Simulate a fixed evaluator order. Once the next item cannot finish, later items vanish."""
         remaining = max(0.0, float(budget_ms))
         selected: list[str] = []
         cost = 0.0
         reward = 0.0
         next_candidate_id: str | None = None
-        for option in self.order(options, z=z):
+        for option in ordered_options[: self.max_findings]:
             robust_cost = option.latency.conservative_ms(z=z)
             if robust_cost > remaining:
                 next_candidate_id = option.candidate_id
@@ -98,3 +94,35 @@ class ReplayScheduler:
             cost += robust_cost
             reward += option.expected_reward
         return ScheduledPrefix(tuple(selected), cost, reward, next_candidate_id)
+
+    def prefix_for_budget(
+        self,
+        options: Iterable[ReplayOption],
+        budget_ms: float,
+        *,
+        z: float = 1.2815515655446004,
+    ) -> ScheduledPrefix:
+        """Sort by robust density, then simulate the fixed replay prefix."""
+        return self.simulate_prefix(self.order(options, z=z), budget_ms, z=z)
+
+    def pack_for_budget(
+        self,
+        options: Iterable[ReplayOption],
+        budget_ms: float,
+        *,
+        z: float = 1.2815515655446004,
+    ) -> ScheduledPrefix:
+        """Construct a new candidate list whose conservative total fits before replay starts.
+
+        Unlike evaluator-prefix simulation, this pre-replay packing stage may omit an option that
+        does not fit and continue considering smaller later options, because the returned list has
+        not been fixed yet.
+        """
+        remaining = max(0.0, float(budget_ms))
+        packed: list[ReplayOption] = []
+        for option in self.order(options, z=z):
+            robust_cost = option.latency.conservative_ms(z=z)
+            if robust_cost <= remaining:
+                packed.append(option)
+                remaining -= robust_cost
+        return self.simulate_prefix(packed, budget_ms, z=z)
