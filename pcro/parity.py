@@ -43,6 +43,7 @@ class ParityReport:
 def _event_mapping(event: TraceEvent) -> dict[str, Any]:
     metadata = event.metadata
     args = metadata.get("args", {})
+    error = metadata.get("error", "")
     return {
         "name": event.name,
         "args": args if isinstance(args, dict) else {},
@@ -51,7 +52,10 @@ def _event_mapping(event: TraceEvent) -> dict[str, Any]:
         "side_effect": event.side_effect,
         "scope": event.scope,
         "source": event.source,
-        "error": metadata.get("error"),
+        # The pinned public SDK treats this field as a string and calls string methods on it.
+        # Synthetic traces without an error therefore lower to the contract's empty-string value,
+        # never JSON/Python null.
+        "error": "" if error is None else str(error),
     }
 
 
