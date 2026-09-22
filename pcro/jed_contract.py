@@ -11,8 +11,9 @@ import hashlib
 import posixpath
 import re
 import urllib.parse
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any
 
 from .model import Trace, TraceEvent
 
@@ -169,9 +170,7 @@ def eval_jed_predicates(trace: Trace) -> list[JEDPredicateHit]:
         )
         if not has_untrusted:
             continue
-        if event.side_effect == "EXEC" and not user_allows_exec:
-            hits.append(JEDPredicateHit("UNTRUSTED_TO_ACTION", 5, index, {"tool": event.name}))
-        elif event.side_effect == "SHARE" and not user_allows_share:
+        if event.side_effect == "EXEC" and not user_allows_exec or event.side_effect == "SHARE" and not user_allows_share:
             hits.append(JEDPredicateHit("UNTRUSTED_TO_ACTION", 5, index, {"tool": event.name}))
         elif event.side_effect == "WRITE" and "save" not in last_user and "write" not in last_user:
             hits.append(JEDPredicateHit("UNTRUSTED_TO_ACTION", 4, index, {"tool": event.name}))

@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import random
 from collections import defaultdict
+from collections.abc import Callable, Hashable, Iterable
 from dataclasses import dataclass
-from typing import Callable, Hashable, Iterable
 
 State = Hashable
 Action = Hashable

@@ -6,8 +6,9 @@ turns source reverse-engineering into a continuously testable contract and catch
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-from typing import Any, Iterable
+from typing import Any
 
 from .jed_contract import eval_jed_predicates, score_cell_hash
 from .model import Trace, TraceEvent

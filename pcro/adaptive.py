@@ -7,8 +7,8 @@ produce natural-language attack prompts or contact external systems.
 from __future__ import annotations
 
 from collections import Counter
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import Iterable, Sequence
 
 from .bandit import Arm
 from .guardrail_lab import DEFAULT_ENSEMBLE, score_ensemble

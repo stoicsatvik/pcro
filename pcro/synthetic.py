@@ -4,7 +4,6 @@ import random
 
 from .model import Trace, TraceEvent
 
-
 TOOLS = ("observe", "inspect", "transform", "record", "publish")
 EFFECTS = (None, None, None, "WRITE", "SHARE")
 

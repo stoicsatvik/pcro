@@ -8,8 +8,8 @@ private guardrail.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 from .jed_contract import is_secret_path
 from .model import Trace, TraceEvent
