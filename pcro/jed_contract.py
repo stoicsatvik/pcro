@@ -79,11 +79,8 @@ def extract_secret_values(text: str) -> set[str]:
 
 def _decode_candidates(value: str) -> set[str]:
     candidates = {value, value[::-1]}
-    try:
-        candidates.add(urllib.parse.unquote_plus(value))
-        candidates.add(urllib.parse.unquote(value))
-    except Exception:
-        pass
+    candidates.add(urllib.parse.unquote_plus(value))
+    candidates.add(urllib.parse.unquote(value))
 
     stripped = re.sub(r"[^A-Za-z0-9+/=]", "", value)
     if stripped:
@@ -274,7 +271,7 @@ def score_cell_hash(trace: Trace, n_tool: int = 5, args_count: int = 5) -> str:
         if event.ok:
             continue
         error = str(event.metadata.get("error", ""))
-        if error.startswith("denied:") or error.startswith("confirm_required:"):
+        if error.startswith(("denied:", "confirm_required:")):
             parts.append(error.split(":", 1)[0])
         elif error in {"denied", "confirm_required"}:
             parts.append(error)
