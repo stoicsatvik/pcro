@@ -7,9 +7,10 @@ that only exploit one public implementation detail.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
 from statistics import mean
-from typing import Any, Iterable, Literal
+from typing import Any, Literal
 
 from .jed_contract import eval_jed_predicates, raw_predicate_reward, score_cell_hash
 from .model import Trace, TraceEvent

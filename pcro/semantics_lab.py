@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, replace
 from itertools import product
-from typing import Callable, Iterable
 
 from .jed_contract import JEDPredicateHit, eval_jed_predicates, raw_predicate_reward
 from .model import Trace, TraceEvent

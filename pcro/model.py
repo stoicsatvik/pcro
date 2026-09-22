@@ -17,7 +17,7 @@ class TraceEvent:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, value: dict[str, Any]) -> "TraceEvent":
+    def from_dict(cls, value: dict[str, Any]) -> TraceEvent:
         return cls(
             name=str(value["name"]),
             ok=bool(value.get("ok", True)),
@@ -43,7 +43,7 @@ class Trace:
         return sum(event.latency_ms for event in self.events)
 
     @classmethod
-    def from_dict(cls, value: dict[str, Any]) -> "Trace":
+    def from_dict(cls, value: dict[str, Any]) -> Trace:
         return cls(
             trace_id=str(value["trace_id"]),
             events=tuple(TraceEvent.from_dict(event) for event in value.get("events", [])),
