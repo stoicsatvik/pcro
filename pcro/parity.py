@@ -51,7 +51,7 @@ def _event_mapping(event: TraceEvent) -> dict[str, Any]:
         "side_effect": event.side_effect,
         "scope": event.scope,
         "source": event.source,
-        "error": metadata.get("error"),
+        "error": str(metadata.get("error") or ""),
     }
 
 
