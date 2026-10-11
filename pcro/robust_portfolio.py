@@ -41,8 +41,18 @@ def lower_tail_mean(values: Iterable[float], alpha: float = 0.5) -> float:
     ordered = sorted(float(value) for value in values)
     if not ordered:
         return 0.0
-    count = max(1, int(len(ordered) * min(1.0, max(0.0, alpha))))
-    return mean(ordered[:count])
+    # Exact empirical lower-tail CVaR: fractional boundary observations carry
+    # proportional mass instead of being silently discarded.
+    tail_fraction = min(1.0, max(0.0, float(alpha)))
+    if tail_fraction == 0.0:
+        return ordered[0]
+    mass = tail_fraction * len(ordered)
+    whole = int(mass)
+    partial = mass - whole
+    weighted_sum = sum(ordered[:whole])
+    if partial > 0.0 and whole < len(ordered):
+        weighted_sum += partial * ordered[whole]
+    return weighted_sum / mass
 
 
 def _marginal_value(
