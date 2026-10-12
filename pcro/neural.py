@@ -6,9 +6,9 @@ contains enough real replay outcomes. This module provides the hook once that da
 
 from __future__ import annotations
 
-
-
 from collections.abc import Iterable, Sequence
+
+
 def train_replay_mlp(
     rows: Iterable[tuple[Sequence[float], int]],
     *,
