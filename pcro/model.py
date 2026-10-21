@@ -18,9 +18,12 @@ class TraceEvent:
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> TraceEvent:
+        ok = value.get("ok", True)
+        if not isinstance(ok, bool):
+            raise TypeError("ok must be a JSON boolean")
         return cls(
             name=str(value["name"]),
-            ok=bool(value.get("ok", True)),
+            ok=ok,
             source=str(value.get("source", "trusted")),
             side_effect=value.get("side_effect"),
             scope=str(value.get("scope", "normal")),
