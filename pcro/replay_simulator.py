@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import math
 import random
-from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from statistics import mean
+from collections.abc import Iterable, Sequence
 
 
 @dataclass(frozen=True)
@@ -50,21 +50,24 @@ def _sample_positive_latency(rng: random.Random, mean_ms: float, std_ms: float) 
     return rng.lognormvariate(mu, sigma)
 
 
-def _family_reliability(
-    rng: random.Random,
-    candidates: Sequence[SimCandidate],
-    strength: float,
-) -> Mapping[str, float]:
-    by_family: dict[str, list[float]] = {}
-    for candidate in candidates:
-        by_family.setdefault(candidate.family, []).append(candidate.success_probability)
-    result: dict[str, float] = {}
-    for family, probabilities in by_family.items():
-        p = min(0.999, max(0.001, mean(probabilities)))
-        alpha = max(0.01, p * strength)
-        beta = max(0.01, (1.0 - p) * strength)
-        result[family] = rng.betavariate(alpha, beta)
-    return result
+def _correlated_success(
+    rng: random.Random, probability: float, shared_uniform: float, shared_weight: float
+) -> bool:
+    """A common-uniform mixture preserves each Bernoulli marginal exactly.
+
+    Each event uses the family's common uniform with probability shared_weight,
+    otherwise an independent uniform. For equal-probability family members,
+    their Bernoulli correlation is shared_weight**2. Unlike blending the
+    probability with a family-average beta draw, this does not bias rare and
+    high-confidence members toward their family's mean.
+    """
+    if probability <= 0.0:
+        return False
+    if probability >= 1.0:
+        return True
+    if rng.random() < shared_weight:
+        return shared_uniform < probability
+    return rng.random() < probability
 
 
 def simulate_replay(
@@ -79,13 +82,24 @@ def simulate_replay(
     candidates = list(ordered_candidates)
     if trials <= 0:
         raise ValueError("trials must be positive")
+    if not math.isfinite(family_correlation_strength) or family_correlation_strength < 0:
+        raise ValueError("family_correlation_strength must be finite and nonnegative")
+    if any(not math.isfinite(c.success_probability) for c in candidates):
+        raise ValueError("success probabilities must be finite")
+
+    # Match the old beta-shock's approximate equal-pair correlation, 1/[4*(s+1)],
+    # without sacrificing individual forecast marginals. This is a modelling
+    # choice, not a measured correlation estimate.
+    shared_weight = 0.5 / math.sqrt(1.0 + family_correlation_strength)
     rng = random.Random(seed)
     scores: list[float] = []
     completed_counts: list[int] = []
     timeouts = 0
 
     for _ in range(trials):
-        family_draw = _family_reliability(rng, candidates, family_correlation_strength)
+        family_uniforms = {
+            family: rng.random() for family in dict.fromkeys(c.family for c in candidates)
+        }
         elapsed = 0.0
         raw = 0.0
         completed = 0
@@ -101,16 +115,7 @@ def simulate_replay(
             elapsed += latency
             completed += 1
             base_p = min(1.0, max(0.0, candidate.success_probability))
-            family_p = family_draw[candidate.family]
-            # Blend individual forecast with a shared family shock. This induces common-mode
-            # failures without pretending we know the true hidden correlation structure.
-            # Exact impossibility/certainty must survive shared family shocks.
-            p = (
-                base_p
-                if base_p in (0.0, 1.0)
-                else min(1.0, max(0.0, 0.5 * base_p + 0.5 * family_p))
-            )
-            if rng.random() < p:
+            if _correlated_success(rng, base_p, family_uniforms[candidate.family], shared_weight):
                 raw += max(0.0, candidate.predicate_reward)
                 if candidate.cell_hash not in cells:
                     raw += novelty_bonus
