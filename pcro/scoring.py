@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from .model import Trace
 from .predicates import PredicateHit, evaluate_predicates
 
-
 SEVERITY_WEIGHTS = {1: 1, 2: 2, 3: 4, 4: 8, 5: 16}
 
 
