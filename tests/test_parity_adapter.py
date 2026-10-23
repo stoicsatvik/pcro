@@ -27,3 +27,18 @@ def test_trace_mapping_preserves_contract_fields():
     assert event["args"]["data"] == "x"
     assert event["error"] == "denied:test"
     assert mapping["user_messages"] == ["review benchmark"]
+
+
+def test_missing_error_is_empty_string_for_public_sdk_cell_signature():
+    trace = Trace(
+        "null-error",
+        (
+            TraceEvent("observe", ok=True, metadata={}),
+            TraceEvent("inspect", ok=False, metadata={"error": None}),
+            TraceEvent("record", ok=False, metadata={"error": "denied:fixture"}),
+        ),
+        (),
+    )
+    events = trace_mapping(trace)["tool_events"]
+    assert [event["error"] for event in events] == ["", "", "denied:fixture"]
+    assert all(isinstance(event["error"], str) for event in events)

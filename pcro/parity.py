@@ -51,7 +51,8 @@ def _event_mapping(event: TraceEvent) -> dict[str, Any]:
         "side_effect": event.side_effect,
         "scope": event.scope,
         "source": event.source,
-        "error": metadata.get("error"),
+        # The pinned public SDK calls .startswith() on error; missing is empty.
+        "error": str(metadata.get("error") or ""),
     }
 
 
