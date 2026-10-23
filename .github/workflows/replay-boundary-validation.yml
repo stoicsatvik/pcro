@@ -1,0 +1,33 @@
+name: replay-boundary-validation
+
+on:
+  push:
+    branches:
+      - 'fix/replay-probability-boundaries-isolated-20261023'
+  pull_request:
+    paths:
+      - 'pcro/replay_simulator.py'
+      - 'tests/test_replay_simulator.py'
+      - '.github/workflows/replay-boundary-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  replay-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -e '.[dev]'
+      - name: Lint modified replay module and tests
+        run: ruff check pcro/replay_simulator.py tests/test_replay_simulator.py
+      - name: Run replay regression tests
+        run: python -m pytest tests/test_replay_simulator.py
+      - name: Run complete test suite
+        run: python -m pytest
+      - name: Run property checks
+        run: pcro properties --seeds 500
