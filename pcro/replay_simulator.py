@@ -104,7 +104,12 @@ def simulate_replay(
             family_p = family_draw[candidate.family]
             # Blend individual forecast with a shared family shock. This induces common-mode
             # failures without pretending we know the true hidden correlation structure.
-            p = min(1.0, max(0.0, 0.5 * base_p + 0.5 * family_p))
+            # Preserve exact impossibility/certainty; apply family shock only to interior forecasts.
+            p = (
+                base_p
+                if base_p in (0.0, 1.0)
+                else min(1.0, max(0.0, 0.5 * base_p + 0.5 * family_p))
+            )
             if rng.random() < p:
                 raw += max(0.0, candidate.predicate_reward)
                 if candidate.cell_hash not in cells:
