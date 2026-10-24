@@ -44,16 +44,20 @@ def test_exact_probability_boundaries_survive_homogeneous_family_shock():
         assert outcome.p90_raw_score == expected_score
 
 
-def test_interior_probability_seeded_regression_is_unchanged():
+def test_interior_probability_seeded_regression_for_marginal_preserving_law():
     candidates = [
         SimCandidate("a", "same", "a", 16, 0.23, 100, 20),
         SimCandidate("b", "same", "b", 9, 0.67, 130, 35),
         SimCandidate("c", "other", "c", 4, 0.82, 80, 0),
     ]
+    # E184 replaces the biased beta-family blend with a marginal-preserving
+    # common-uniform mixture. Old goldens represented the rejected law.
+    # These exact results were independently reproduced with a separate
+    # synthetic reference implementation using Python's seeded RNG.
     expected = {
-        0: (16.832, 0.022, 2.977),
-        7: (17.301, 0.018, 2.982),
-        83: (17.05, 0.024, 2.974),
+        0: (15.777, 0.025, 2.975),
+        7: (16.659, 0.021, 2.978),
+        83: (16.014, 0.017, 2.983),
     }
     for seed, (score, timeout_rate, completed) in expected.items():
         outcome = simulate_replay(candidates, 400, trials=1000, seed=seed)
