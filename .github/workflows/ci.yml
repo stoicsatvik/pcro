@@ -18,6 +18,12 @@ jobs:
       - run: ruff check .
       - run: pytest
       - run: pcro properties --seeds 500
+      - name: E225 exact family-diversification falsification
+        run: python experiments/e225_family_diversification.py > e225_family_diversification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e225-family-diversification
+          path: e225_family_diversification.json
 
   jed-parity:
     runs-on: ubuntu-latest
