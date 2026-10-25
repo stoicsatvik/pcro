@@ -8,8 +8,17 @@ from __future__ import annotations
 import json
 import math
 import random
+from importlib.util import module_from_spec, spec_from_file_location
+from pathlib import Path
 
-from experiments.e225_family_diversification import distribution, summary
+# Experiments are standalone scripts, not an installed Python package.
+_SPEC = spec_from_file_location("e225_family_diversification",
+                                Path(__file__).with_name("e225_family_diversification.py"))
+assert _SPEC and _SPEC.loader
+_E225 = module_from_spec(_SPEC)
+_SPEC.loader.exec_module(_E225)
+distribution = _E225.distribution
+summary = _E225.summary
 
 PARTITIONS = ((8,), (4, 4), (2, 2, 2, 2), (1,) * 8)
 GLOBAL_WEIGHTS = (0.0, 0.01, 0.05, 0.10, 0.25, 0.50, 1.0)
