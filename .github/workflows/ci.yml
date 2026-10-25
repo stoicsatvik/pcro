@@ -38,6 +38,13 @@ jobs:
           name: e260-pairwise-tail-nonidentifiability
           path: e260_pairwise_tail_nonidentifiability.json
 
+      - name: E276 exact triplewise-independent tail non-identifiability
+        run: python experiments/e276_triplewise_tail_nonidentifiability.py > e276_triplewise_tail_nonidentifiability.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e276-triplewise-tail-nonidentifiability
+          path: e276_triplewise_tail_nonidentifiability.json
+
   jed-parity:
     runs-on: ubuntu-latest
     steps:
