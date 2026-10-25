@@ -23,10 +23,9 @@ def test_marginals_and_distribution(partition, q):
 
 
 def test_q_zero_equals_existing_e225_law():
-    from experiments.e225_family_diversification import distribution
     for partition in M.PARTITIONS:
         assert M.global_shock_pmf(partition, 0.5, 0.0, 0.0) == pytest.approx(
-            distribution(partition, 0.5, 0.0)
+            M.distribution(partition, 0.5, 0.0)
         )
 
 
