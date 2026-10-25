@@ -31,6 +31,13 @@ jobs:
           name: e244-global-shock-diversification
           path: e244_global_shock_diversification.json
 
+      - name: E260 exact pairwise-independent tail non-identifiability
+        run: python experiments/e260_pairwise_tail_nonidentifiability.py > e260_pairwise_tail_nonidentifiability.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e260-pairwise-tail-nonidentifiability
+          path: e260_pairwise_tail_nonidentifiability.json
+
   jed-parity:
     runs-on: ubuntu-latest
     steps:
