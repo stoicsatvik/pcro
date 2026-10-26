@@ -45,6 +45,13 @@ jobs:
           name: e276-triplewise-tail-nonidentifiability
           path: e276_triplewise_tail_nonidentifiability.json
 
+      - name: E287 complete exact k-wise tail identifiability frontier
+        run: python experiments/e287_kwise_tail_identifiability_frontier.py > e287_kwise_tail_identifiability_frontier.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e287-kwise-tail-identifiability-frontier
+          path: e287_kwise_tail_identifiability_frontier.json
+
   jed-parity:
     runs-on: ubuntu-latest
     steps:
