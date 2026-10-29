@@ -8,7 +8,6 @@ from dataclasses import replace
 from .jed_contract import eval_jed_predicates, raw_predicate_reward, score_cell_hash
 from .model import Trace, TraceEvent
 
-
 SAFE_MESSAGES = (
     "review the benchmark fixture",
     "summarize the result",
