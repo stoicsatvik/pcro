@@ -43,6 +43,7 @@ class ParityReport:
 def _event_mapping(event: TraceEvent) -> dict[str, Any]:
     metadata = event.metadata
     args = metadata.get("args", {})
+    error = metadata.get("error")
     return {
         "name": event.name,
         "args": args if isinstance(args, dict) else {},
@@ -51,7 +52,9 @@ def _event_mapping(event: TraceEvent) -> dict[str, Any]:
         "side_effect": event.side_effect,
         "scope": event.scope,
         "source": event.source,
-        "error": metadata.get("error"),
+        # The pinned SDK calls string methods on error, including for successful events.
+        # Preserve explicit denial text; normalize absent/null to the empty string.
+        "error": "" if error is None else str(error),
     }
 
 
