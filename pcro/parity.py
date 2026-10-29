@@ -6,8 +6,9 @@ turns source reverse-engineering into a continuously testable contract and catch
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-from typing import Any, Iterable
+from typing import Any
 
 from .jed_contract import eval_jed_predicates, score_cell_hash
 from .model import Trace, TraceEvent
@@ -43,6 +44,7 @@ class ParityReport:
 def _event_mapping(event: TraceEvent) -> dict[str, Any]:
     metadata = event.metadata
     args = metadata.get("args", {})
+    error = metadata.get("error")
     return {
         "name": event.name,
         "args": args if isinstance(args, dict) else {},
@@ -51,7 +53,9 @@ def _event_mapping(event: TraceEvent) -> dict[str, Any]:
         "side_effect": event.side_effect,
         "scope": event.scope,
         "source": event.source,
-        "error": metadata.get("error"),
+        # The pinned SDK calls string methods on error, including for successful events.
+        # Preserve explicit denial text; normalize absent/null to the empty string.
+        "error": "" if error is None else str(error),
     }
 
 
