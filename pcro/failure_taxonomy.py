@@ -106,7 +106,7 @@ def diagnose(
     for index, observed in enumerate(actual.events):
         if not observed.ok:
             error = _error(observed)
-            if error.startswith("denied:") or error.startswith("confirm_required:"):
+            if error.startswith(("denied:", "confirm_required:")):
                 return FailureDiagnosis(
                     FailureStage.GUARDRAIL_DENIED,
                     min(matched, index),

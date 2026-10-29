@@ -28,7 +28,7 @@ from .synthetic import generate_traces
 def _load(path: str) -> list[Trace]:
     payload = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(payload, list):
-        raise ValueError("trace file must contain a JSON list")
+        raise ValueError("trace file must contain a JSON list")  # noqa: TRY004 - stable CLI contract
     return [Trace.from_dict(item) for item in payload]
 
 

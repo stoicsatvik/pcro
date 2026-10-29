@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +34,7 @@ class JsonlExperimentStore:
 
     def append(self, record: ExperimentRecord) -> None:
         payload: dict[str, Any] = asdict(record)
-        payload["recorded_at"] = datetime.now(timezone.utc).isoformat()
+        payload["recorded_at"] = datetime.now(UTC).isoformat()
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
