@@ -28,7 +28,7 @@ E406 rejected the claim that density packing always maximizes deterministic addi
 
 Across 128 paired seed means, nominal exact minus density greedy realized reward = **−2.981567**. Exact wins 17 seeds, loses 48, ties 63. The tie-heavy result means this is not a claim of universal greedy superiority. The 85% margin reduces truncation but also gives up considerable expected reward; it is not an optimized robust policy.
 
-**Independent local validation:** A source-equivalent Python scheduler mirror reproduces all four frozen receipts and 128 paired seed comparisons. A separate 12-candidate exact DP implementation was checked against brute-force enumeration for three held-out seeds and three budgets (nine agreements). The committed test file includes four tests, but **exact committed-source pytest, Ruff and GitHub Actions were NOT RUN**. The repository previously reported exhausted included Actions minutes; no paid CI was requested.
+**Independent local validation:** A source-equivalent Python scheduler mirror and an independently authored JavaScript implementation agree exactly on all four frozen receipts, truncation rates and 128 paired seed comparisons. A separate 12-candidate exact DP implementation was checked against brute-force enumeration for three held-out seeds and three budgets (nine agreements). The committed test file includes four tests, but **exact committed-source pytest, Ruff and GitHub Actions were NOT RUN**. The repository previously reported exhausted included Actions minutes; no paid CI was requested.
 
 ## Interpretation
 
