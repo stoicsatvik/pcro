@@ -117,8 +117,13 @@ def evaluate() -> dict:
         "paired_seed_wins": sum(x > 0 for x in seed_diffs),
         "paired_seed_losses": sum(x < 0 for x in seed_diffs),
         "paired_seed_ties": sum(x == 0 for x in seed_diffs),
-        "claim_state": "NOMINAL EXACT OPTIMALITY DOES NOT GUARANTEE REALIZED FIXED-PREFIX DOMINANCE",
-        "scope": "Synthetic additive rewards, deterministic LCG costs, bounded independent latency noise; no real replay.",
+        "claim_state": (
+            "NOMINAL EXACT OPTIMALITY DOES NOT GUARANTEE REALIZED FIXED-PREFIX DOMINANCE"
+        ),
+        "scope": (
+            "Synthetic additive rewards, deterministic LCG costs, bounded independent "
+            "latency noise; no real replay."
+        ),
     }
 
 
