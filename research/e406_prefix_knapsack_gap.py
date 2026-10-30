@@ -81,9 +81,7 @@ def evaluate() -> dict:
                 "oracle_ids": oracle_ids,
                 "density_ids": density_ids,
             })
-    worst = sorted(
-        outcomes, key=lambda row: (-row["regret"], row["seed"], row["budget_ms"])
-    )[0]
+    worst = min(outcomes, key=lambda row: (-row["regret"], row["seed"], row["budget_ms"]))
     per_budget = {
         str(budget): {
             "cases": 128,
