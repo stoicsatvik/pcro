@@ -1,4 +1,5 @@
 """E426 synthetic fixed-prefix latency falsification; no external evaluator calls."""
+from pcro.runtime import ReplayScheduler
 from research.e406_prefix_knapsack_gap import exact_oracle, fixture
 from research.e426_latency_uncertainty import (
     evaluate,
@@ -7,7 +8,6 @@ from research.e426_latency_uncertainty import (
     options,
     realized,
 )
-from pcro.runtime import ReplayScheduler
 
 
 def test_exact_dp_agrees_with_exhaustive_subset_oracle():

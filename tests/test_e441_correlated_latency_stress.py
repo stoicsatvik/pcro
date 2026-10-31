@@ -1,7 +1,7 @@
 """E441 fixed-seed, non-operational latency correlation sensitivity checks."""
+from research.e406_prefix_knapsack_gap import fixture
 from research.e426_latency_uncertainty import latency_noise
 from research.e441_correlated_latency_stress import MODES, evaluate, factors, realized
-from research.e406_prefix_knapsack_gap import fixture
 
 
 def test_frozen_noise_endpoints_and_reproducibility():

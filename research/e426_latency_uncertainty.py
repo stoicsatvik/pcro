@@ -4,9 +4,11 @@ Synthetic abstract candidates only; no security attacks or actual evaluator repl
 Frozen E406 LCG seeds 128..255, 24 options, budget 400 ms, 64 draws/seed.
 """
 from __future__ import annotations
+
 import json
-from research.e406_prefix_knapsack_gap import Case, fixture
+
 from pcro.runtime import ReplayOption, ReplayScheduler, RunningStats
+from research.e406_prefix_knapsack_gap import Case, fixture
 
 SEEDS = range(128, 256)
 DRAWS = range(64)

@@ -4,11 +4,19 @@ No real evaluator, security payload, external service, or policy promotion.
 128 E426 holdout seeds x 64 draws; all candidate lists frozen before noise.
 """
 from __future__ import annotations
+
 import json
+
 from pcro.runtime import ReplayScheduler
 from research.e406_prefix_knapsack_gap import fixture
 from research.e426_latency_uncertainty import (
-    BUDGET, DRAWS, N, SEEDS, exact_ids, latency_noise, options,
+    BUDGET,
+    DRAWS,
+    SEEDS,
+    N,
+    exact_ids,
+    latency_noise,
+    options,
 )
 
 MODES = ("independent", "half_shared", "fully_shared")
