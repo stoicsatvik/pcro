@@ -12,8 +12,8 @@ from research.e406_prefix_knapsack_gap import fixture
 from research.e426_latency_uncertainty import (
     BUDGET,
     DRAWS,
-    SEEDS,
     N,
+    SEEDS,
     exact_ids,
     latency_noise,
     options,
