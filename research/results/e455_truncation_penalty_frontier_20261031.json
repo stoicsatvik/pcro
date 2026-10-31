@@ -1,0 +1,160 @@
+{
+  "schema": "pcro/e455/truncation-penalty-frontier/v1",
+  "date": "2026-10-31",
+  "generator": "E454 frozen synthetic 24-option generator",
+  "budget": 400,
+  "shared_latency": "Uniform[0.7,1.3)",
+  "draws_per_seed": 64,
+  "development_seeds": [
+    256,
+    383
+  ],
+  "holdout_seeds": [
+    384,
+    511
+  ],
+  "policies": [
+    "exact400",
+    "dp0",
+    "dp50",
+    "dp100",
+    "chance50",
+    "chance90"
+  ],
+  "local_validation": "20 exhaustive 8-option DP comparisons plus boundaries and dominance passed; Node --check passed",
+  "development_regression": {
+    "exact400_fully_shared_sim_reward": 631.677978515625,
+    "dp0_fully_shared_sim_reward": 659.365478515625
+  },
+  "holdout_analytic": {
+    "exact400": [
+      624.9200102868232,
+      0.5299789196373226,
+      601.4189562686896,
+      577.9179022505556
+    ],
+    "dp0": [
+      652.2521437582826,
+      0.05235579359241505,
+      604.8699334379032,
+      557.4877231175241
+    ],
+    "dp50": [
+      645.6322112278534,
+      0.3064082834026971,
+      610.9526253979883,
+      576.2730395681233
+    ],
+    "dp100": [
+      617.9331438767979,
+      0.6692280489836108,
+      601.3945463259784,
+      584.8559487751593
+    ],
+    "chance50": [
+      626.3850064581687,
+      0.5409625678774024,
+      603.4331348520388,
+      580.4812632459091
+    ],
+    "chance90": [
+      580.4424537073269,
+      0.9496623540017908,
+      577.9255714074167,
+      575.4086891075061
+    ]
+  },
+  "holdout_analytic_columns": [
+    "expected_reward",
+    "full_completion_probability",
+    "utility_penalty50",
+    "utility_penalty100"
+  ],
+  "holdout_simulation": {
+    "fully_shared": {
+      "exact400": [
+        624.8209228515625,
+        0.4747314453125
+      ],
+      "dp0": [
+        651.944580078125,
+        0.9466552734375
+      ],
+      "dp50": [
+        645.413330078125,
+        0.69873046875
+      ],
+      "dp100": [
+        618.01611328125,
+        0.3299560546875
+      ],
+      "chance50": [
+        626.36669921875,
+        0.4632568359375
+      ],
+      "chance90": [
+        580.5137939453125,
+        0.0494384765625
+      ]
+    },
+    "half_shared": {
+      "exact400": [
+        634.942626953125,
+        0.44384765625
+      ],
+      "dp0": [
+        645.2783203125,
+        1
+      ],
+      "dp50": [
+        646.482421875,
+        0.853271484375
+      ],
+      "dp100": [
+        628.4366455078125,
+        0.2420654296875
+      ],
+      "chance50": [
+        637.080078125,
+        0.426025390625
+      ],
+      "chance90": [
+        583.203125,
+        0
+      ]
+    },
+    "independent": {
+      "exact400": [
+        639.53662109375,
+        0.39990234375
+      ],
+      "dp0": [
+        643.415283203125,
+        1
+      ],
+      "dp50": [
+        644.7845458984375,
+        0.9276123046875
+      ],
+      "dp100": [
+        631.5753173828125,
+        0.201904296875
+      ],
+      "chance50": [
+        642.0640869140625,
+        0.36376953125
+      ],
+      "chance90": [
+        583.203125,
+        0
+      ]
+    }
+  },
+  "holdout_simulation_columns": [
+    "mean_reward",
+    "truncation_rate"
+  ],
+  "interpretation": "Risk-neutral shared-DP advantage reverses above penalty 57.225 against exact400; penalty50 shared-model DP fails to transfer to independent noise at penalty50",
+  "scientific_boundary": "Synthetic generator only; no real latency, evaluator, security outcome or production performance",
+  "reproduce": "node research/e455_truncation_penalty_frontier.mjs"
+}
