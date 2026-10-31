@@ -32,3 +32,7 @@ Exact analytic shared-model expectations on the holdout: nominal exact 400 = 630
 Freeze independent candidate-cost and latency-family generators (not merely new seeds); compare expected-prefix DP against chance-constrained and risk-penalized controls under misspecified common shocks, varying the cost of truncation. Seek legitimate, consented public replay timing traces and measure batch correlation before any production promotion.
 
 Reproduce without dependencies: `node research/e454_shared_latency_expected_dp.mjs`. No Actions run requested or main merge.
+
+## Counterexample to global ordering optimality
+
+Even with the same known fully shared multiplier, density ordering need not maximize expected prefix reward. Two abstract options A=(cost 60 ms, reward 10) and B=(cost 250 ms, reward 20) have density(A)=0.1667 > density(B)=0.08, but the exact expected rewards are **29.677419** for A→B and **29.838710** for B→A. This deterministic two-option counterexample is asserted by the executable source. Consequently, E454's dynamic program is optimal only over subsequences of its frozen density order; it does not prove global permutation optimality. No real evaluator inference follows.
