@@ -68,6 +68,16 @@ function test(){
     if(Math.abs(objective(rows,ids,.7,1.3).reward-objective(rows,ids,.7,1.3).utility)>1e-10)throw Error('zero-penalty identity');
     count++;
   }
+  // Exact E454 holdout analytic control (256..383), independent of Monte Carlo draws.
+  let nominalMean=0, sharedMean=0;
+  for(let seed=256;seed<384;seed++){
+    const rows=fixture(seed);
+    nominalMean+=objective(rows,nominalExact(rows),.7,1.3).reward/128;
+    sharedMean+=objective(rows,riskDP(rows,0),.7,1.3).reward/128;
+  }
+  if(Math.abs(nominalMean-630.789093)>1e-5||Math.abs(sharedMean-658.110632)>1e-5)
+    throw Error('E454 holdout analytic control mismatch');
+  count+=2;
   return count;
 }
 const tests=test();
