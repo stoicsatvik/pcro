@@ -1,0 +1,528 @@
+{
+  "experiment": "E473_FROZEN_DISTRIBUTION_SHIFT",
+  "seeds": [
+    640,
+    767
+  ],
+  "draws_per_seed": 64,
+  "policies": [
+    "exact400",
+    "dp50",
+    "dp100",
+    "chance90"
+  ],
+  "models": {
+    "uniform": "U[0.7,1.3); rho common factor interpolation",
+    "tail": "90% U[0.7,1.1), 10% U[1.1,2.3), mean 0.98; rho common interpolation"
+  },
+  "conditions": {
+    "uniform_0": {
+      "exact400": {
+        "utility": 623.97119,
+        "truncation": 0.40527,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 602.13586,
+        "truncation": 0.91711,
+        "delta_vs_exact": {
+          "mean": -21.83533,
+          "se": 1.24975,
+          "ci95": [
+            -24.28483,
+            -19.38583
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 625.50635,
+        "truncation": 0.15405,
+        "delta_vs_exact": {
+          "mean": 1.53516,
+          "se": 1.51643,
+          "ci95": [
+            -1.43705,
+            4.50736
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 586.90625,
+        "truncation": 0,
+        "delta_vs_exact": {
+          "mean": -37.06494,
+          "se": 1.62788,
+          "ci95": [
+            -40.25559,
+            -33.8743
+          ]
+        }
+      }
+    },
+    "uniform_0.25": {
+      "exact400": {
+        "utility": 623.64001,
+        "truncation": 0.40796,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 601.40369,
+        "truncation": 0.91504,
+        "delta_vs_exact": {
+          "mean": -22.23633,
+          "se": 1.16419,
+          "ci95": [
+            -24.51814,
+            -19.95452
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 624.89636,
+        "truncation": 0.15881,
+        "delta_vs_exact": {
+          "mean": 1.25635,
+          "se": 1.42669,
+          "ci95": [
+            -1.53997,
+            4.05266
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 586.90625,
+        "truncation": 0,
+        "delta_vs_exact": {
+          "mean": -36.73376,
+          "se": 1.52489,
+          "ci95": [
+            -39.72255,
+            -33.74498
+          ]
+        }
+      }
+    },
+    "uniform_0.5": {
+      "exact400": {
+        "utility": 616.83093,
+        "truncation": 0.44702,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 605.84961,
+        "truncation": 0.85669,
+        "delta_vs_exact": {
+          "mean": -10.98132,
+          "se": 0.94632,
+          "ci95": [
+            -12.8361,
+            -9.12655
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 619.76782,
+        "truncation": 0.19727,
+        "delta_vs_exact": {
+          "mean": 2.93689,
+          "se": 1.11756,
+          "ci95": [
+            0.74647,
+            5.12731
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 586.90625,
+        "truncation": 0,
+        "delta_vs_exact": {
+          "mean": -29.92468,
+          "se": 1.42341,
+          "ci95": [
+            -32.71458,
+            -27.13479
+          ]
+        }
+      }
+    },
+    "uniform_0.75": {
+      "exact400": {
+        "utility": 610.96667,
+        "truncation": 0.46387,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 612.2793,
+        "truncation": 0.75769,
+        "delta_vs_exact": {
+          "mean": 1.31262,
+          "se": 0.70338,
+          "ci95": [
+            -0.066,
+            2.69125
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 611.98755,
+        "truncation": 0.25208,
+        "delta_vs_exact": {
+          "mean": 1.02087,
+          "se": 0.83634,
+          "ci95": [
+            -0.61834,
+            2.66009
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 586.85388,
+        "truncation": 0.00061,
+        "delta_vs_exact": {
+          "mean": -24.11279,
+          "se": 1.28263,
+          "ci95": [
+            -26.62675,
+            -21.59884
+          ]
+        }
+      }
+    },
+    "uniform_1": {
+      "exact400": {
+        "utility": 605.08276,
+        "truncation": 0.47302,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 613.81372,
+        "truncation": 0.69116,
+        "delta_vs_exact": {
+          "mean": 8.73096,
+          "se": 0.64448,
+          "ci95": [
+            7.46778,
+            9.99413
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 603.01563,
+        "truncation": 0.30774,
+        "delta_vs_exact": {
+          "mean": -2.06714,
+          "se": 0.83802,
+          "ci95": [
+            -3.70965,
+            -0.42462
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 581.57739,
+        "truncation": 0.05457,
+        "delta_vs_exact": {
+          "mean": -23.50537,
+          "se": 1.16081,
+          "ci95": [
+            -25.78055,
+            -21.23019
+          ]
+        }
+      }
+    },
+    "tail_0": {
+      "exact400": {
+        "utility": 631.7135,
+        "truncation": 0.29773,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 615.57385,
+        "truncation": 0.82239,
+        "delta_vs_exact": {
+          "mean": -16.13965,
+          "se": 1.1908,
+          "ci95": [
+            -18.47361,
+            -13.80569
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 622.83179,
+        "truncation": 0.15796,
+        "delta_vs_exact": {
+          "mean": -8.88171,
+          "se": 1.3313,
+          "ci95": [
+            -11.49106,
+            -6.27237
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 583.92322,
+        "truncation": 0.02588,
+        "delta_vs_exact": {
+          "mean": -47.79028,
+          "se": 1.32235,
+          "ci95": [
+            -50.3821,
+            -45.19847
+          ]
+        }
+      }
+    },
+    "tail_0.25": {
+      "exact400": {
+        "utility": 632.77051,
+        "truncation": 0.28711,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 615.98694,
+        "truncation": 0.81873,
+        "delta_vs_exact": {
+          "mean": -16.78357,
+          "se": 1.1181,
+          "ci95": [
+            -18.97505,
+            -14.59209
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 623.21362,
+        "truncation": 0.15417,
+        "delta_vs_exact": {
+          "mean": -9.55688,
+          "se": 1.35267,
+          "ci95": [
+            -12.20811,
+            -6.90566
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 584.3208,
+        "truncation": 0.02344,
+        "delta_vs_exact": {
+          "mean": -48.44971,
+          "se": 1.36547,
+          "ci95": [
+            -51.12603,
+            -45.77338
+          ]
+        }
+      }
+    },
+    "tail_0.5": {
+      "exact400": {
+        "utility": 634.4176,
+        "truncation": 0.24622,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 622.0824,
+        "truncation": 0.75659,
+        "delta_vs_exact": {
+          "mean": -12.33521,
+          "se": 0.95739,
+          "ci95": [
+            -14.21169,
+            -10.45872
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 621.21777,
+        "truncation": 0.14832,
+        "delta_vs_exact": {
+          "mean": -13.19983,
+          "se": 1.58455,
+          "ci95": [
+            -16.30556,
+            -10.0941
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 578.82703,
+        "truncation": 0.06201,
+        "delta_vs_exact": {
+          "mean": -55.59058,
+          "se": 1.24348,
+          "ci95": [
+            -58.0278,
+            -53.15336
+          ]
+        }
+      }
+    },
+    "tail_0.75": {
+      "exact400": {
+        "utility": 629.35876,
+        "truncation": 0.26367,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 629.76563,
+        "truncation": 0.65735,
+        "delta_vs_exact": {
+          "mean": 0.40686,
+          "se": 0.78387,
+          "ci95": [
+            -1.12952,
+            1.94324
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 617.53784,
+        "truncation": 0.15234,
+        "delta_vs_exact": {
+          "mean": -11.82092,
+          "se": 1.59464,
+          "ci95": [
+            -14.94642,
+            -8.69543
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 574.54749,
+        "truncation": 0.07727,
+        "delta_vs_exact": {
+          "mean": -54.81128,
+          "se": 1.22854,
+          "ci95": [
+            -57.21921,
+            -52.40335
+          ]
+        }
+      }
+    },
+    "tail_1": {
+      "exact400": {
+        "utility": 623.31287,
+        "truncation": 0.28906,
+        "delta_vs_exact": {
+          "mean": 0,
+          "se": 0,
+          "ci95": [
+            0,
+            0
+          ]
+        }
+      },
+      "dp50": {
+        "utility": 633.29626,
+        "truncation": 0.58545,
+        "delta_vs_exact": {
+          "mean": 9.9834,
+          "se": 0.81323,
+          "ci95": [
+            8.38947,
+            11.57733
+          ]
+        }
+      },
+      "dp100": {
+        "utility": 612.9624,
+        "truncation": 0.16638,
+        "delta_vs_exact": {
+          "mean": -10.35046,
+          "se": 1.52939,
+          "ci95": [
+            -13.34806,
+            -7.35287
+          ]
+        }
+      },
+      "chance90": {
+        "utility": 571.1571,
+        "truncation": 0.08472,
+        "delta_vs_exact": {
+          "mean": -52.15576,
+          "se": 1.23585,
+          "ci95": [
+            -54.57803,
+            -49.73349
+          ]
+        }
+      }
+    }
+  },
+  "tests": "12 exhaustive 8-option DP oracles, survival boundaries, tail-transform domain, shared-factor and reproducibility PASS",
+  "validation": {
+    "source_blob_sha": "5b8e5ccd921f382d6f3e3a33e1c8c0041eb57466",
+    "method": "Exact fetched GitHub JS executed in isolated V8 after replacing node:assert import with equivalent local assert methods; not native Node CI",
+    "exhaustive_oracles": 12,
+    "real_latency_data": false,
+    "model_selection_after_holdout": false
+  }
+}
