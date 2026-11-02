@@ -28,6 +28,10 @@ python -m research.e513_trace_replay catalog.csv complete_runs.csv provenance.js
 
 Acquire consented, reproducible, timestamped latency measurements for the **same 24 defined tasks** with documented hardware, load, execution order, warmup, trial boundaries and clock resolution. Keep raw files immutable and record independent source provenance. Freeze dataset inclusion and train/holdout splits before policy comparison. If complete counterfactual traces cannot be collected, **report that limitation** rather than silently filling missing durations or promoting synthetic scores to empirical evidence.
 
-## Run outcome
+## Observed validation and preserved failure
 
-Pending exact-head CI confirmation. No claim of measured scheduling performance is made.
+- Initial E513 trace-gate workflow [#41516562509](https://github.com/stoicsatvik/pcro/actions/runs/41516562509) passed all **10 synthetic controls**.
+- Initial full CI [#41516562554](https://github.com/stoicsatvik/pcro/actions/runs/41516562554) **failed Ruff**, specifically TRY004 (non-object provenance should raise TypeError) and I001 (test import formatting). Both issues were fixed in follow-up commits; the failure is retained here rather than erased.
+- After corrections, exact-head E513 workflow [#41516803851](https://github.com/stoicsatvik/pcro/actions/runs/41516803851) passed. Full CI [#41516804251](https://github.com/stoicsatvik/pcro/actions/runs/41516804251) passed Ruff, pytest and 500 property seeds in its test job; JED parity was still in progress at this report update.
+
+**No measured traces were supplied or evaluated.** This is a validated ingestion/replay interface, not a real-world scheduling result.
