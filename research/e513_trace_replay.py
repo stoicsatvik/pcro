@@ -81,7 +81,7 @@ def load_complete_runs(path):
     return {key: [runs[key][i] for i in range(N_TASKS)] for key in sorted(runs)}
 
 
-def check_provenance(path, trace_path):
+def check_provenance(path, trace_path, catalog_path):
     meta = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(meta, dict):
         raise TypeError("provenance must be a JSON object")
@@ -99,11 +99,14 @@ def check_provenance(path, trace_path):
     digest = hashlib.sha256(Path(trace_path).read_bytes()).hexdigest()
     if meta.get("trace_sha256") != digest:
         raise ValueError("trace SHA256 mismatch; reject modified or misidentified input")
+    catalog_digest = hashlib.sha256(Path(catalog_path).read_bytes()).hexdigest()
+    if meta.get("catalog_sha256") != catalog_digest:
+        raise ValueError("catalog SHA256 mismatch; reject modified or misidentified task contract")
     return meta, digest
 
 
 def evaluate(catalog_path, trace_path, provenance_path):
-    meta, digest = check_provenance(provenance_path, trace_path)
+    meta, digest = check_provenance(provenance_path, trace_path, catalog_path)
     rows = load_catalog(catalog_path)
     runs = load_complete_runs(trace_path)
     selected = policies(rows)
@@ -125,6 +128,7 @@ def evaluate(catalog_path, trace_path, provenance_path):
         "dataset_id": meta["dataset_id"],
         "source_kind": meta["source_kind"],
         "trace_sha256": digest,
+        "catalog_sha256": meta["catalog_sha256"],
         "run_count": n,
         "task_count": N_TASKS,
         "policies": {"dp50": a, "exact400": b},
@@ -133,7 +137,7 @@ def evaluate(catalog_path, trace_path, provenance_path):
         "descriptive_paired_se": se,
         "per_run": per_run,
         "limitations": (
-            "Input source_kind and collection protocol are self-reported, not authenticated. "
+            "Input source_kind, collection protocol and both file digests are self-reported, not authenticated. "
             "Complete runs allow counterfactual replay but do not establish task stationarity, "
             "independence of runs, latency causality or out-of-sample generalization. "
             "Synthetic inputs are tests, never empirical validation."
