@@ -26,6 +26,20 @@ python research/e511_heldout_tail_proxy.py > e511_heldout_results.json
 
 The dedicated `.github/workflows/e511-tail-proxy.yml` runs the controls and emits the fixed cohort summary. This report was committed **before reading the full-cohort results**. Any failures, lint issues, or workflow errors must be retained and corrected transparently.
 
-## Pending results and limits
 
-Exact-head GitHub CI and full-cohort summary pending. No outreach, hidden data, policy optimization, merge or deployment. If this simple proxy fails, the next gate is a predeclared prefix-weighted statistic evaluated on a separate seed cohort, not post-hoc tuning to E511.
+
+## Observed fixed-cohort result (no refitting)
+
+The exact-head E511 workflow [#41497648614](https://github.com/stoicsatvik/pcro/actions/runs/41497648614) completed successfully with **5/5 deterministic controls passed**. The full fixed 32-seed / 128-draw experiment emitted:
+
+| Copula family (q=0.55) | Mean DP50 - exact400 utility | Mean completion probability gap | Matching signs / 32 | Opposing nonzero signs | Proxy ties | Predeclared 24/32 gate |
+|---|---:|---:|---:|---:|---:|---|
+| Gaussian | **-0.162598** | -0.303223 | **16/32** | 15 | 1 | **FAIL** |
+| Bernoulli mixture | **-5.399890** | -0.352332 | **25/32** | 6 | 1 | PASS |
+
+Each family also had one utility tie. **Negative result retained:** completion-probability gap is **not** a robust cross-family ranking proxy under the frozen 75% gate. Its Gaussian sign agreement is only 50% of seeds. Passing Bernoulli does not rescue the joint claim.
+
+The Gaussian mean utility difference on this smaller E511 cohort is slightly negative, unlike E507's +1.4202 on 128 earlier seeds with 256 draws each. **Do not interpret this as a distribution shift or a proven population reversal.** Different finite cohorts and Monte Carlo precision can change a small mean; this experiment did not calculate an inferential uncertainty interval. Both completion gaps are negative, which does not by itself explain the distinct mean utilities.
+
+The experiment uses the *same* draws to estimate the diagnostic and realized utility. This is a descriptive falsification of a frozen proxy, not independently validated forecasting. The next experiment should freeze a prefix-reward-weighted feature and validate it on **new seeds**, with an independent draw split if fitting any model. No empirical latency claim, hidden evaluator, deployment, merge or outreach.
+
