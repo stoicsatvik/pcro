@@ -1,0 +1,32 @@
+name: E511 held-out completion-tail proxy
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e511_heldout_tail_proxy.py'
+      - 'research/test_e511_heldout_tail_proxy.py'
+      - 'research/E511_HELDOUT_TAIL_PROXY_20261102.md'
+      - '.github/workflows/e511-tail-proxy.yml'
+jobs:
+  heldout-tail-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Deterministic E511 controls
+        run: python -m unittest discover -s research -p 'test_e511_heldout_tail_proxy.py' -v
+      - name: Frozen 32-seed held-out diagnostic (not a fitted predictor)
+        run: |
+          python - <<'PY'
+          import json
+          from research.e511_heldout_tail_proxy import evaluate
+          result = evaluate()
+          print(json.dumps({k: v for k, v in result.items() if k != "per_seed"}, indent=2))
+          PY
