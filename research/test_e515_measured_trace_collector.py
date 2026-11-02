@@ -80,10 +80,9 @@ class CollectorTests(unittest.TestCase):
             def unstable(task_id, rounds):
                 calls[0] += 1
                 return str(calls[0])
-            with patch("research.e515_measured_trace_collector.workload", side_effect=unstable):
-                with self.assertRaisesRegex(RuntimeError, "nondeterministic"):
-                    collect(Path(temp) / "pilot", warmups=1, calibrations=2,
-                            holdouts=2, rounds_override=1, source_kind="synthetic")
+            with patch("research.e515_measured_trace_collector.workload", side_effect=unstable), self.assertRaisesRegex(RuntimeError, "nondeterministic"):
+                collect(Path(temp) / "pilot", warmups=1, calibrations=2,
+                        holdouts=2, rounds_override=1, source_kind="synthetic")
 
 
 if __name__ == "__main__":
