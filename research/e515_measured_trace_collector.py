@@ -12,7 +12,7 @@ import platform
 import random
 import statistics
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 N_TASKS = 24
@@ -106,7 +106,7 @@ def collect(destination, *, warmups=1, calibrations=3, holdouts=6, seed=ORDER_SE
         "source_kind": source_kind,
         "time_unit": "ms",
         "collection_protocol": "serial dependent SHA256 CPU tasks; randomized order; warmup, calibration, then held-out complete runs",
-        "collected_at_utc": datetime.now(timezone.utc).isoformat(),
+        "collected_at_utc": datetime.now(UTC).isoformat(),
         "trace_sha256": _sha(traces),
         "catalog_sha256": _sha(catalog),
         "collector_sha256": _sha(Path(__file__)),
