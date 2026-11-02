@@ -1,0 +1,31 @@
+name: E516 fresh measured CPU stress controls
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e516_measured_stress.py'
+      - 'research/test_e516_measured_stress.py'
+      - 'research/E516_FRESH_MEASURED_CPU_STRESS_20261103.md'
+      - 'research/results/e516_cpu_stress_*'
+      - '.github/workflows/e516-measured-stress.yml'
+jobs:
+  collector-and-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: E516 frozen protocol and mock controls
+        run: python -m unittest discover -s research -p 'test_e516_measured_stress.py' -v
+      - name: Replay exact committed measured E516 traces
+        run: |
+          python -m research.e513_trace_replay \
+            research/results/e516_cpu_stress_catalog.csv \
+            research/results/e516_cpu_stress_holdout_traces.csv \
+            research/results/e516_cpu_stress_provenance.json
