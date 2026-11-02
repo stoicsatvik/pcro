@@ -1,8 +1,15 @@
 import math
 import random
 import unittest
-from e507_gaussian_copula import (fixture, density_order, exact, optimize,
-                                  survival, gaussian_factors, run)
+from e507_gaussian_copula import (
+    density_order,
+    exact,
+    fixture,
+    gaussian_factors,
+    optimize,
+    run,
+    survival,
+)
 
 
 class GaussianCopulaTests(unittest.TestCase):
