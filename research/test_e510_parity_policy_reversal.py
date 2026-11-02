@@ -11,7 +11,6 @@ from fractions import Fraction
 
 from research.test_e509_parity_copula import parity_states, prefix_overrun_probability
 
-
 REWARD_PER_TASK = 10
 MISS_PENALTY = 10
 DEADLINE_MS = 300
