@@ -1,0 +1,24 @@
+name: E514 paired trace catalog binding
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e513_trace_replay.py'
+      - 'research/test_e513_trace_replay.py'
+      - 'research/E514_CATALOG_DIGEST_BINDING_20261103.md'
+      - '.github/workflows/e514-catalog-binding.yml'
+jobs:
+  catalog-binding-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Thirteen synthetic trace and catalog controls
+        run: python -m unittest discover -s research -p 'test_e513_trace_replay.py' -v
