@@ -26,3 +26,19 @@ python research/e512_reward_prefix_proxy.py
 The full 32-seed result must be appended below only after the frozen implementation and tests are committed. Keep any failed CI or contradictory results visible.
 
 ## Results (pending preregistered evaluation)
+
+
+## Observed frozen-cohort results (no refitting)
+
+[Exact-head E512 workflow #41506853453](https://github.com/stoicsatvik/pcro/actions/runs/41506853453) succeeded with **7/7 deterministic controls** and the preregistered 32-seed experiment. Each seed had 128 independent diagnostic and 128 independent outcome draws, with the two copula families evaluated using the frozen q=0.55 laws.
+
+| Family | Mean independent outcome utility gap (DP50 - exact400) | Mean reward-prefix score gap | Reward-prefix matching signs | Completion-only matching signs | Reward-prefix opposing signs | Predeclared gate |
+|---|---:|---:|---:|---:|---:|---|
+| Gaussian | **-0.438477** | +12.326660 | **15/32** | 13/32 | 13 | **FAIL** |
+| Bernoulli mixture | **-6.007361** | +9.842224 | **4/32** | 24/32 | 24 | **FAIL** |
+
+Both families had four reward-prefix proxy ties and four independent outcome utility ties. The Gaussian reward-prefix diagnostic improves over the completion-only baseline by two matching seeds, but remains far below the 24/32 gate. **The Bernoulli reward-prefix diagnostic is much worse than the completion-only baseline (4/32 versus 24/32).** Neither family passes the frozen joint gate.
+
+**Negative finding retained:** The diagnostic predicts a positive *average* reward-prefix gap in both families, while the independent outcome estimates show negative *average* utility gaps. A score that omits the 50-unit missed-task penalty can systematically favor a policy that earns more partial-prefix reward but suffers greater failure costs. This is consistent with the reward/penalty accounting identity, but the experiment does not identify a unique causal mechanism. Four ties further limit directional coverage.
+
+The experiment cannot establish statistical generalization beyond these deterministic synthetic cohorts; there are no uncertainty intervals, measured replay latencies, external validity claims, or fitted coefficients. Do **not** repair the failed gate by changing the threshold, seeds or feature after inspection. A penalty-aware full-prefix score could reproduce the existing utility definition algebraically and would be a poor independent scientific test; a more valuable next step is to obtain real latency traces, validate dependence models and test a genuinely reduced-order predictor under a frozen train/holdout split.
