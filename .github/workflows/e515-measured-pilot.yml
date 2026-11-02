@@ -1,0 +1,31 @@
+name: E515 measured CPU pilot controls
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e515_measured_trace_collector.py'
+      - 'research/test_e515_measured_trace_collector.py'
+      - 'research/E515_MEASURED_CPU_PILOT_20261103.md'
+      - 'research/results/e515_cpu_pilot_*'
+      - '.github/workflows/e515-measured-pilot.yml'
+jobs:
+  collector-and-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Seven collector and integration controls
+        run: python -m unittest discover -s research -p 'test_e515_measured_trace_collector.py' -v
+      - name: Replay committed measured pilot without refitting
+        run: |
+          python -m research.e513_trace_replay \
+            research/results/e515_cpu_pilot_catalog.csv \
+            research/results/e515_cpu_pilot_holdout_traces.csv \
+            research/results/e515_cpu_pilot_provenance.json
