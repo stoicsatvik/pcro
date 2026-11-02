@@ -84,7 +84,7 @@ def load_complete_runs(path):
 def check_provenance(path, trace_path):
     meta = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(meta, dict):
-        raise ValueError("provenance must be a JSON object")
+        raise TypeError("provenance must be a JSON object")
     if meta.get("time_unit") != "ms":
         raise ValueError("time_unit must be ms")
     if meta.get("source_kind") not in ("synthetic", "measured"):
