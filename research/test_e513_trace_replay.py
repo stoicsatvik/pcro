@@ -54,6 +54,7 @@ class TraceGateTests(unittest.TestCase):
             "source_kind": "synthetic",
             "time_unit": "ms",
             "trace_sha256": hashlib.sha256(self.traces.read_bytes()).hexdigest(),
+            "catalog_sha256": hashlib.sha256(self.catalog.read_bytes()).hexdigest(),
         }
         metadata.update(overrides)
         self.provenance.write_text(json.dumps(metadata), encoding="utf-8")
@@ -107,12 +108,12 @@ class TraceGateTests(unittest.TestCase):
     def test_tampered_trace_digest_rejected(self):
         self.traces.write_text(self.traces.read_text(encoding="utf-8") + "\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "SHA256 mismatch"):
-            check_provenance(self.provenance, self.traces)
+            check_provenance(self.provenance, self.traces, self.catalog)
 
     def test_measured_claim_requires_protocol_but_is_not_authenticated(self):
         self.write_provenance(source_kind="measured")
         with self.assertRaisesRegex(ValueError, "collection_protocol"):
-            check_provenance(self.provenance, self.traces)
+            check_provenance(self.provenance, self.traces, self.catalog)
         self.write_provenance(source_kind="measured", collection_protocol="self-reported benchmark")
         result = evaluate(self.catalog, self.traces, self.provenance)
         self.assertEqual(result["source_kind"], "measured")
@@ -121,7 +122,7 @@ class TraceGateTests(unittest.TestCase):
     def test_wrong_unit_rejected(self):
         self.write_provenance(time_unit="seconds")
         with self.assertRaisesRegex(ValueError, "time_unit"):
-            check_provenance(self.provenance, self.traces)
+            check_provenance(self.provenance, self.traces, self.catalog)
 
     def test_catalog_missing_or_duplicate_ids_rejected(self):
         self.write_catalog(self.rows[:-1])
@@ -144,6 +145,34 @@ class TraceGateTests(unittest.TestCase):
         ])
         with self.assertRaisesRegex(ValueError, "two complete runs"):
             load_complete_runs(self.traces)
+
+
+    def test_catalog_tamper_rejected_with_unchanged_trace(self):
+        original_trace_digest = hashlib.sha256(self.traces.read_bytes()).hexdigest()
+        changed = list(self.rows)
+        task_id, reward, nominal = changed[0]
+        changed[0] = (task_id, reward + 1, nominal)
+        self.write_catalog(changed)
+        self.assertEqual(hashlib.sha256(self.traces.read_bytes()).hexdigest(), original_trace_digest)
+        with self.assertRaisesRegex(ValueError, "catalog SHA256 mismatch"):
+            evaluate(self.catalog, self.traces, self.provenance)
+
+    def test_missing_catalog_digest_rejected(self):
+        self.write_provenance(catalog_sha256=None)
+        with self.assertRaisesRegex(ValueError, "catalog SHA256 mismatch"):
+            evaluate(self.catalog, self.traces, self.provenance)
+
+    def test_coherent_catalog_and_metadata_rewrite_still_passes(self):
+        original_digest = hashlib.sha256(self.catalog.read_bytes()).hexdigest()
+        changed = list(self.rows)
+        task_id, reward, nominal = changed[0]
+        changed[0] = (task_id, reward + 1, nominal)
+        self.write_catalog(changed)
+        self.write_provenance()
+        result = evaluate(self.catalog, self.traces, self.provenance)
+        self.assertNotEqual(result["catalog_sha256"], original_digest)
+        self.assertEqual(result["source_kind"], "synthetic")
+        self.assertIn("not authenticated", result["limitations"])
 
 
 if __name__ == "__main__":
