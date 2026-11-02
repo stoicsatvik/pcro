@@ -84,5 +84,33 @@ class GaussianCopulaTests(unittest.TestCase):
         self.assertAlmostEqual(result['gaussian_minus_bernoulli']['1.0']['mean'], 0)
 
 
+    def test_matched_correlation_does_not_match_joint_slowdown_tail(self):
+        """Synthetic q=.55 families disagree on simultaneous upper-tail delays.
+
+        Bernoulli common shock is evaluated analytically; Gaussian is a
+        preseeded finite Monte Carlo control. This is not measured latency.
+        """
+        q = 0.55
+        threshold = 1.2
+        marginal_tail = (1.3 - threshold) / 0.6
+        bernoulli_joint = q * marginal_tail + (1 - q) * marginal_tail**2
+        rng = random.Random(508)
+        n = 50000
+        slow_first = slow_both = 0
+        for _ in range(n):
+            factors = gaussian_factors(
+                rng.gauss(0, 1),
+                [rng.gauss(0, 1), rng.gauss(0, 1)],
+                q,
+            )
+            slow_first += factors[0] > threshold
+            slow_both += factors[0] > threshold and factors[1] > threshold
+        gaussian_joint = slow_both / n
+        self.assertAlmostEqual(slow_first / n, marginal_tail, delta=0.01)
+        self.assertAlmostEqual(gaussian_joint, 0.076, delta=0.01)
+        self.assertAlmostEqual(bernoulli_joint, 0.10416666666666667)
+        self.assertGreater(bernoulli_joint - gaussian_joint, 0.02)
+
+
 if __name__ == '__main__':
     unittest.main()
