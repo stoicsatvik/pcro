@@ -9,7 +9,11 @@ from pathlib import Path
 
 from research.e507_gaussian_copula import fixture, policies, realized
 from research.e513_trace_replay import (
-    N_TASKS, check_provenance, evaluate, load_catalog, load_complete_runs,
+    N_TASKS,
+    check_provenance,
+    evaluate,
+    load_catalog,
+    load_complete_runs,
 )
 
 
