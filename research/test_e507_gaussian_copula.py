@@ -1,6 +1,7 @@
 import math
 import random
 import unittest
+
 from e507_gaussian_copula import (
     density_order,
     exact,
