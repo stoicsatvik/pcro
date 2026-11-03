@@ -37,7 +37,7 @@ def replay_at_budget(rows, selected, durations, budget_ms, penalty=PENALTY):
 
 
 def sweep(catalog_path, trace_path, provenance_path):
-    """One prespecified inclusive integer grid, no tuning or dropped runs."""
+    """Fixed inclusive integer grid; no tuning or dropped runs."""
     meta, _ = check_provenance(provenance_path, trace_path, catalog_path)
     if meta["dataset_id"] != "E516_CPU_SHA256_FRESH_STRESS" or meta["source_kind"] != "measured":
         raise ValueError("E517 is restricted to the frozen E516 measured cohort")

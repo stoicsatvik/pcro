@@ -6,7 +6,7 @@ Date: 2026-11-03. Continuation of draft PR #25. This is a **diagnostic reanalysi
 
 E516 found mean DP50-minus-exact400 synthetic utility **-33.333** at the original **400 ms** budget. Does that sign remain invariant to the replay deadline when both policy selections, all 24 task rewards, all 144 measured durations, and the 50-unit miss penalty stay fixed?
 
-Before inspecting the sweep, define the inclusive integer replay-budget grid **350..500 ms** in 1 ms steps. Never re-optimize policies when changing the replay budget: the E516 catalog's calibration-only 400 ms choices remain DP50 (22 tasks) and exact400 (19 tasks). Keep the original E516 trace and catalog bytes and hashes unchanged. This sensitivity question is post-hoc and cannot validate an optimal budget or causal performance.
+For this exploratory post-hoc diagnostic, use the inclusive integer replay-budget grid **350..500 ms** in 1 ms steps. Never re-optimize policies when changing the replay budget: the E516 catalog's calibration-only 400 ms choices remain DP50 (22 tasks) and exact400 (19 tasks). Keep the original E516 trace and catalog bytes and hashes unchanged. This sensitivity question is post-hoc and cannot validate an optimal budget or causal performance.
 
 ## Results and negative evidence
 
