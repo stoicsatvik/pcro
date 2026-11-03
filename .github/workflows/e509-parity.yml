@@ -1,0 +1,26 @@
+name: E509 higher-order synthetic latency controls
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/test_e509_parity_copula.py'
+      - 'research/test_e510_parity_policy_reversal.py'
+      - 'research/E509_HIGHER_ORDER_LATENCY_DEPENDENCE_20261102.md'
+      - 'research/E510_PARITY_POLICY_REVERSAL_20261102.md'
+      - '.github/workflows/e509-parity.yml'
+jobs:
+  exact-parity-controls:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test exact pairwise-identical three-task counterexample
+        run: |
+          python -m unittest discover -s research -p 'test_e509_parity_copula.py' -v
+          python -m unittest discover -s research -p 'test_e510_parity_policy_reversal.py' -v

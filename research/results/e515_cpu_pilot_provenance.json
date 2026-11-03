@@ -1,0 +1,25 @@
+{
+  "dataset_id": "E515_CPU_SHA256_PILOT",
+  "source_kind": "measured",
+  "time_unit": "ms",
+  "collection_protocol": "Serial dependent SHA256 CPU tasks; randomized task order; one warmup, three calibration runs, six complete held-out runs. Catalog nominal_ms is rounded median calibration duration; reward is synthetic.",
+  "collected_at_utc": "2026-11-02T22:11:22.270869+00:00",
+  "trace_sha256": "5bcb09c52bb7505c087bb9396807fb65cb844fbd6ec9f34c55d27e346d1ccc22",
+  "catalog_sha256": "1f48dcc297e993e6d67f06edd420c22d12797a1b9df8a2e1e74dac1254ee7548",
+  "collector_sha256": "4b0111170ce82cc6d4c5c478cdb027d078cb175c74b4dacde1915993da52b47b",
+  "environment": {
+    "python": "3.13.5",
+    "python_implementation": "CPython",
+    "system": "Linux",
+    "machine": "x86_64",
+    "cpu_count_visible": 5,
+    "perf_counter_resolution_seconds": 1e-9
+  },
+  "warmup_runs": 1,
+  "calibration_runs": 3,
+  "holdout_runs": 6,
+  "order_seed": 3843366950,
+  "reward_source": "arbitrary deterministic synthetic rewards, not measured value",
+  "limitations": "Exploratory container-host CPU microbenchmark; unknown contention/thermal conditions; calibration and holdout share host; randomization does not guarantee independence; no policy-specific contention or scheduling overhead; self-reported provenance is not authenticated. Both policies selected all 24 tasks, so this cohort is non-discriminative.",
+  "record_note": "Compact derivative of original local manifest. Exact catalog and trace CSV bytes retained; omitted original warmup/calibration order logs and per-task digest list."
+}

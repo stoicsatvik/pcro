@@ -1,0 +1,22 @@
+name: E507 matched-copula synthetic controls
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e507_gaussian_copula.py'
+      - 'research/test_e507_gaussian_copula.py'
+      - '.github/workflows/e507-copula.yml'
+jobs:
+  exact-controls:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run fixed-marginal synthetic copula oracles
+        run: python -m unittest discover -s research -p 'test_e507_gaussian_copula.py' -v

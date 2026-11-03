@@ -1,0 +1,24 @@
+name: E513 complete paired trace gate
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e513_trace_replay.py'
+      - 'research/test_e513_trace_replay.py'
+      - 'research/E513_COMPLETE_PAIRED_TRACE_GATE_20261103.md'
+      - '.github/workflows/e513-trace-gate.yml'
+jobs:
+  trace-gate-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Ten synthetic trace gate controls
+        run: python -m unittest discover -s research -p 'test_e513_trace_replay.py' -v

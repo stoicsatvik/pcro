@@ -1,0 +1,76 @@
+{
+  "experiment": "E507",
+  "date": "2026-11-02",
+  "scope": "synthetic matched-marginal replay scheduling only",
+  "cohort": [
+    896,
+    1023
+  ],
+  "seeds": 128,
+  "draws_per_seed": 256,
+  "nominal_budget": 400,
+  "truncation_penalty": 50,
+  "marginal": "U[0.7,1.3] both families",
+  "pairwise_Pearson_q": [
+    0,
+    0.25,
+    0.4,
+    0.5,
+    0.55,
+    0.6,
+    0.675649,
+    0.75,
+    1
+  ],
+  "policy": "dp50 minus exact400",
+  "means": {
+    "gaussian": [
+      -19.754883,
+      -7.351227,
+      -2.562256,
+      0.20639,
+      1.420197,
+      2.551331,
+      4.040405,
+      5.566589,
+      10.150604
+    ],
+    "bernoulli": [
+      -19.754883,
+      -12.278511,
+      -7.792688,
+      -4.802139,
+      -3.306865,
+      -1.811591,
+      0.45073,
+      2.674232,
+      10.150604
+    ]
+  },
+  "q055": {
+    "gaussian": {
+      "mean": 1.420197,
+      "descriptive_95": [
+        0.041203,
+        2.79919
+      ]
+    },
+    "bernoulli": {
+      "mean": -3.306865,
+      "descriptive_95": [
+        -4.796747,
+        -1.816983
+      ]
+    },
+    "paired_difference": {
+      "mean": 4.727061,
+      "descriptive_95": [
+        3.989963,
+        5.46416
+      ]
+    }
+  },
+  "claim": "Same marginals and pairwise correlation do not fix policy ranking under different copula families in this synthetic cohort",
+  "limits": "No empirical replay timings, evaluator access, external benchmark, population confidence intervals, or security payloads",
+  "validation": "Seven deterministic local unit tests pass after correction of q=1 floating-point endpoint; native CI pending at report creation"
+}

@@ -1,0 +1,32 @@
+name: E512 independent reward-prefix diagnostic
+on:
+  push:
+    branches:
+      - 'research/e507-matched-copula-family-20261102'
+  pull_request:
+    paths:
+      - 'research/e512_reward_prefix_proxy.py'
+      - 'research/test_e512_reward_prefix_proxy.py'
+      - 'research/E512_INDEPENDENT_REWARD_PREFIX_20261103.md'
+      - '.github/workflows/e512-reward-prefix.yml'
+jobs:
+  independent-prefix-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Seven deterministic E512 controls
+        run: python -m unittest discover -s research -p 'test_e512_reward_prefix_proxy.py' -v
+      - name: Frozen independent-draw E512 cohort and gate
+        run: |
+          python - <<'PY'
+          import json
+          from research.e512_reward_prefix_proxy import evaluate
+          result = evaluate()
+          print(json.dumps({k: v for k, v in result.items() if k != "per_seed"}, indent=2))
+          PY
