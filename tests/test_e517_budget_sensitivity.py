@@ -6,7 +6,7 @@ from pathlib import Path
 
 from research.e517_budget_sensitivity import replay_at_budget, sweep
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1] / "research"
 RESULTS = ROOT / "results"
 CATALOG = RESULTS / "e516_cpu_stress_catalog.csv"
 TRACES = RESULTS / "e516_cpu_stress_holdout_traces.csv"
