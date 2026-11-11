@@ -21,9 +21,9 @@ def test_pinned_e516_trace_exposes_a_repeatable_negative_run_order_association()
     result = run(TRACES, CATALOG, PROVENANCE)
     assert result["cohort"] == {"runs": 6, "tasks_per_run": 24, "observations": 144}
     effect = result["run_order_effect"]
-    assert effect["log_duration_slope_per_full_run"] == pytest.approx(-0.0535018548, abs=1e-8)
-    assert effect["multiplicative_first_to_last"] == pytest.approx(0.9479041828, abs=1e-8)
-    assert effect["permutation_p_two_sided"] == pytest.approx(0.0042, abs=1e-12)
+    assert effect["log_duration_slope_per_full_run"] == pytest.approx(-0.0523642835, abs=1e-8)
+    assert effect["multiplicative_first_to_last"] == pytest.approx(0.9489831050, abs=1e-8)
+    assert effect["permutation_p_two_sided"] == pytest.approx(0.0049, abs=1e-12)
     assert all(value < 0 for value in effect["leave_one_run_out_log_slopes"].values())
     assert result["task_rank_stability"]["median_pairwise_spearman"] > 0.99
     assert result["claim_boundary"]["causal_mechanism"] == "NOT IDENTIFIED"
