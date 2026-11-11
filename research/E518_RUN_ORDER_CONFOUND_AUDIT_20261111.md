@@ -30,22 +30,22 @@ Model:
 
 ## Result
 
-<badge>Candidate confound detected</badge>
+**Candidate confound detected.**
 
 | Metric | Result |
 |---|---:|
 | Observations | 144 |
-| Full-run log-duration slope | -0.0535019 |
-| First-to-last multiplicative duration ratio | 0.947904 |
-| Partial R² for order after task + run effects | 0.069529 |
-| Two-sided within-run permutation p | 0.0042 |
+| Full-run log-duration slope | -0.0523643 |
+| First-to-last multiplicative duration ratio | 0.948983 |
+| Partial R² for order after task + run effects | 0.067317 |
+| Two-sided within-run permutation p | 0.0049 |
 | Median pairwise task-duration rank Spearman | 0.995652 |
 | Task-only R² | 0.986739 |
 | Run-only R² | 0.002982 |
 | Task + run R² | 0.989721 |
-| Task + run + order R² | 0.990436 |
+| Task + run + order R² | 0.990413 |
 
-The fitted position effect corresponds to approximately **5.21% lower duration from the first to last execution position**, conditional on task and run fixed effects. Five of six run-specific slopes are negative; all six leave-one-run-out estimates remain negative (range approximately -0.0236 to -0.0659 log units per full run).
+The fitted position effect corresponds to approximately **5.10% lower duration from the first to last execution position**, conditional on task and run fixed effects. Five of six run-specific slopes are negative; all six leave-one-run-out estimates remain negative (range approximately -0.0236 to -0.0637 log units per full run).
 
 Task identity still dominates the measured cost structure: median pairwise task-rank correlation is approximately 0.996, and task-only R² is 0.987. But the order association is not negligible relative to the remaining variation.
 
@@ -75,3 +75,8 @@ Collect a fresh, multi-host cohort with task execution order randomized independ
 5. fresh policy replay with measured scheduler overhead.
 
 If order drift disappears under randomized blocked acquisition, the current effect is likely host/runtime-state-specific. If it persists across hosts and blocks, it becomes a stronger scheduling confound candidate. Do not call the current six-run result an independent replication.
+
+
+## Validation correction and preserved test failure
+
+The first exact-head E518 workflow (#43012041885) failed one integration assertion because the expected coefficient had been calculated from a local reconstruction that appended one holdout-003 row at the end instead of preserving its original execution position. The committed E516 CSV was not wrong. E518's parser preserves the source row order, and the corrected exact-source result is the value reported above. The fixture expectation was corrected; the original failed run remains in Actions history.
