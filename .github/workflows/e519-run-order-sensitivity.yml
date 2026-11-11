@@ -1,0 +1,64 @@
+name: E519 same-source run-order sensitivity
+
+on:
+  push:
+    branches:
+      - research/e519-run-order-sensitivity-20261112
+    paths:
+      - research/e519_run_order_sensitivity.py
+      - research/test_e519_run_order_sensitivity.py
+      - research/E519_RUN_ORDER_SENSITIVITY_20261112.md
+      - research/e518_run_order_confound.py
+      - research/results/e516_cpu_stress_holdout_traces.csv
+      - research/results/e516_cpu_stress_catalog.csv
+      - research/results/e516_cpu_stress_provenance.json
+      - .github/workflows/e519-run-order-sensitivity.yml
+  pull_request:
+    branches:
+      - research/e518-run-order-confound-20261111
+    paths:
+      - research/e519_run_order_sensitivity.py
+      - research/test_e519_run_order_sensitivity.py
+      - research/E519_RUN_ORDER_SENSITIVITY_20261112.md
+      - research/e518_run_order_confound.py
+      - research/results/e516_cpu_stress_holdout_traces.csv
+      - research/results/e516_cpu_stress_catalog.csv
+      - research/results/e516_cpu_stress_provenance.json
+      - .github/workflows/e519-run-order-sensitivity.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e519-run-order-sensitivity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install audit dependencies
+        run: python -m pip install "numpy>=1.26,<3" "pytest>=8,<9"
+      - name: Run deterministic E519 tests
+        run: python -m pytest -q research/test_e519_run_order_sensitivity.py
+      - name: Run source-pinned sensitivity campaign
+        run: >-
+          python -m research.e519_run_order_sensitivity
+          --traces research/results/e516_cpu_stress_holdout_traces.csv
+          --catalog research/results/e516_cpu_stress_catalog.csv
+          --provenance research/results/e516_cpu_stress_provenance.json
+          --out .artifacts/e519/result.json
+      - name: Preserve compact result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e519-run-order-sensitivity
+          path: .artifacts/e519/result.json
+          if-no-files-found: ignore
+          retention-days: 14
