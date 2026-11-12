@@ -87,5 +87,39 @@
       "holdout-005": -0.019136410505896297
     }
   },
-  "status": "COMPLETE"
+  "status": "COMPLETE",
+  "task_rank_stability_reaudit": {
+    "experiment": "E520A",
+    "script": "research/e520_task_rank_stability_audit.py",
+    "source_csv": "research/results/e520_holdout_measurements.csv",
+    "rows": 144,
+    "runs": 6,
+    "tasks_per_run": 24,
+    "within_run_task_id_duration_spearman": {
+      "holdout-000": 0.9991304347826087,
+      "holdout-001": 0.9521739130434783,
+      "holdout-002": 1,
+      "holdout-003": 0.9973913043478261,
+      "holdout-004": 0.9947826086956522,
+      "holdout-005": 1
+    },
+    "pairwise_task_duration_rank_spearman": {
+      "pairs": 15,
+      "median": 0.9956521739130435,
+      "minimum": 0.9382608695652174,
+      "maximum": 1
+    },
+    "pooled_task_id_duration_spearman_average_ties": 0.9846510089368863,
+    "legacy_reported_statistic": {
+      "median": -0.12344267996967351,
+      "range": [
+        -0.7009541714096962,
+        0.43373512603284853
+      ],
+      "status": "UNRESOLVED_NOT_REPRODUCED_UNDER_STANDARD_PAIRWISE_DURATION_RANK",
+      "reason": "The preregistration does not define the task-rank stability pairing/estimand; no committed E520 analysis code reproduces this legacy statistic."
+    },
+    "validation": "Independent raw-CSV JavaScript recomputation passed 10/10 deterministic invariants; committed Python script not run by CI.",
+    "interpretation": "Task-duration ranks are highly stable under the conventional task_id-keyed pairwise definition; the legacy negative statistic is unresolved. E520 primary position slope and permutation result are unchanged."
+  }
 }
