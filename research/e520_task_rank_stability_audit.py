@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """E520A: reconcile the task-rank stability statistic from pinned holdout rows.
 
 Uses only the committed 6x24 E520 holdout CSV. Task identity is the stable
