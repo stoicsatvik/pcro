@@ -1,0 +1,79 @@
+{
+  "experiment": "E520",
+  "title": "Cross-environment replication of E518/E519 execution-position association",
+  "preregistered_at": "2026-11-13T00:48:03+05:30",
+  "branch": "research/e520-cross-environment-order-replication-20261113",
+  "base_branch": "research/e519-run-order-sensitivity-20261112",
+  "base_head": "0908fa7aa09ef11cfe679dfc41a6e09a2701f30b",
+  "source_collector": "research/e516_measured_stress.py",
+  "source_collector_git_blob_sha": "7f4f9af09b142643860734d316898abf60b8a5f8",
+  "workload": "Exact E515 serial dependent SHA256 chain; task_rounds=8000+2200*task_id; E516 3/2 integer half-up multiplier",
+  "task_count": 24,
+  "runs": {
+    "warmup": 1,
+    "calibration": 3,
+    "holdout": 6
+  },
+  "task_order_seed": 3844087846,
+  "analysis_permutations": 9999,
+  "analysis_seed": 3844087847,
+  "primary_endpoint": "Two-way task+run fixed-effects slope of log(duration_ms) against normalized within-run execution position on the balanced 6x24 holdout panel",
+  "secondary_endpoints": [
+    "within-run task-position permutation reference",
+    "six run-specific slopes",
+    "leave-one-task-out slope range",
+    "first/last 1..5 position trimming sensitivity",
+    "task-rank stability"
+  ],
+  "hypotheses": {
+    "H1": "A broadly recurring runtime-state/warmup effect yields a negative execution-position slope in this new environment.",
+    "H2": "The E519 negative slope is environment-specific; the new slope is near zero or reverses sign.",
+    "H3": "Task-specific cost and run-level heterogeneity dominate; run-specific slopes remain mixed."
+  },
+  "comparison": {
+    "prior_e519_slope_log_per_full_run": -0.0523643,
+    "prior_e519_permutation_reference_p": 0.0066,
+    "prior_claim": "robust same-source candidate confound on one GitHub Actions container host; not multi-host replication"
+  },
+  "environment_preflight": {
+    "python": "3.13.5",
+    "implementation": "CPython",
+    "system": "Linux",
+    "kernel": "6.18.57",
+    "machine": "x86_64",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+    "visible_cpu_count": 3,
+    "perf_counter_resolution_seconds": 1e-9,
+    "note": "Runtime profile differs from E516's reported 5 visible CPUs, but prior E516 did not record CPU model or hostname; distinct physical host identity is not authenticated."
+  },
+  "telemetry": {
+    "per_task": [
+      "UTC start/end",
+      "monotonic elapsed nanoseconds",
+      "process CPU nanoseconds",
+      "execution position"
+    ],
+    "per_run": [
+      "load average",
+      "/proc/stat CPU counters",
+      "CPU frequency if exposed",
+      "thermal readings if exposed",
+      "run start/end UTC"
+    ],
+    "missing_fields_must_remain_null": true
+  },
+  "exclusions": [
+    "No reward or policy retuning",
+    "No post-hoc workload scaling",
+    "No outlier deletion",
+    "No task deletion from primary panel",
+    "No claims of independent host without verified hardware identity"
+  ],
+  "interpretation_rule": "One new execution environment can test transportability of the association but cannot establish multi-host reproducibility or a causal mechanism.",
+  "claim_boundary": {
+    "execution_order_association": "CANDIDATE CONFOUND",
+    "independent_host_replication": "NOT MEASURED unless hardware identity can be independently distinguished",
+    "causal_mechanism": "NOT IDENTIFIED",
+    "real_task_scheduler_superiority": "NOT PROVEN"
+  }
+}
