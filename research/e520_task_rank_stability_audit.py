@@ -11,7 +11,10 @@ import argparse
 import csv
 import json
 from itertools import combinations
+from math import isfinite
 from pathlib import Path
+
+REQUIRED_COLUMNS = {"run_id", "task_id", "duration_ms"}
 
 
 def average_ranks(values: list[float]) -> list[float]:
@@ -32,6 +35,8 @@ def average_ranks(values: list[float]) -> list[float]:
 def spearman(left: list[float], right: list[float]) -> float:
     if len(left) != len(right) or len(left) < 2:
         raise ValueError("Spearman inputs must have equal length >= 2")
+    if not all(isfinite(value) for value in left + right):
+        raise ValueError("Spearman inputs must be finite")
     a, b = average_ranks(left), average_ranks(right)
     ma, mb = sum(a) / len(a), sum(b) / len(b)
     numerator = sum((x - ma) * (y - mb) for x, y in zip(a, b))
@@ -42,9 +47,54 @@ def spearman(left: list[float], right: list[float]) -> float:
     return numerator / (da * db) ** 0.5
 
 
-def audit(path: Path) -> dict:
+def _read_measurements(path: Path) -> list[dict]:
+    """Read a strict, finite task-duration panel before any rank calculation."""
     with path.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
+        reader = csv.DictReader(handle)
+        headers = reader.fieldnames or []
+        if not headers or any(not name or not name.strip() for name in headers):
+            raise ValueError("holdout CSV has a missing or empty header")
+        if len(headers) != len(set(headers)):
+            raise ValueError("holdout CSV contains duplicate headers")
+        missing = REQUIRED_COLUMNS - set(headers)
+        if missing:
+            raise ValueError(
+                "holdout CSV is missing required columns: "
+                + ", ".join(sorted(missing))
+            )
+
+        rows = []
+        for line_number, row in enumerate(reader, start=2):
+            if None in row:
+                raise ValueError(f"holdout CSV row {line_number} has extra fields")
+            if any(row.get(name) is None or not row[name].strip() for name in REQUIRED_COLUMNS):
+                raise ValueError(f"holdout CSV row {line_number} has an empty required field")
+            run_id = row["run_id"].strip()
+            if not run_id:
+                raise ValueError(f"holdout CSV row {line_number} has an empty run_id")
+            try:
+                task_id = int(row["task_id"])
+                duration = float(row["duration_ms"])
+            except ValueError as error:
+                raise ValueError(
+                    f"holdout CSV row {line_number} has a non-numeric task_id or duration"
+                ) from error
+            if not isfinite(duration):
+                raise ValueError(
+                    f"holdout CSV row {line_number} duration_ms must be finite"
+                )
+            if duration <= 0:
+                raise ValueError(
+                    f"holdout CSV row {line_number} duration_ms must be positive"
+                )
+            rows.append(
+                {"run_id": run_id, "task_id": task_id, "duration_ms": duration}
+            )
+    return rows
+
+
+def audit(path: Path) -> dict:
+    rows = _read_measurements(path)
     if len(rows) != 144:
         raise ValueError(f"expected 144 holdout rows, found {len(rows)}")
 
@@ -60,14 +110,12 @@ def audit(path: Path) -> dict:
     task_duration_by_run = {}
     for run_id in run_ids:
         group = groups[run_id]
-        task_ids = [int(row["task_id"]) for row in group]
+        task_ids = [row["task_id"] for row in group]
         if len(group) != 24 or set(task_ids) != expected_tasks:
             raise ValueError(f"{run_id} is not a complete 24-task panel")
-        ordered = sorted(group, key=lambda row: int(row["task_id"]))
-        tasks = [int(row["task_id"]) for row in ordered]
-        durations = [float(row["duration_ms"]) for row in ordered]
-        if any(value <= 0 for value in durations):
-            raise ValueError(f"{run_id} contains a non-positive duration")
+        ordered = sorted(group, key=lambda row: row["task_id"])
+        tasks = [row["task_id"] for row in ordered]
+        durations = [row["duration_ms"] for row in ordered]
         task_duration_by_run[run_id] = dict(zip(tasks, durations))
         per_run.append(
             {
@@ -88,8 +136,8 @@ def audit(path: Path) -> dict:
 
     pair_values = sorted(item["spearman"] for item in pairwise)
     median = pair_values[len(pair_values) // 2]
-    pooled_tasks = [int(row["task_id"]) for row in rows]
-    pooled_durations = [float(row["duration_ms"]) for row in rows]
+    pooled_tasks = [row["task_id"] for row in rows]
+    pooled_durations = [row["duration_ms"] for row in rows]
     pooled = spearman(pooled_tasks, pooled_durations)
 
     result = {
