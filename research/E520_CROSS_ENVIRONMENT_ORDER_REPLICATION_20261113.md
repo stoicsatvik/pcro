@@ -35,7 +35,7 @@ E520 details:
 - Leave-one-task-out slopes cross zero: **−0.01853 to +0.00696**.
 - First/last-position trimming slopes cross zero: **−0.03088 to +0.01293**.
 - Raw-duration slope has the opposite sign: **+0.14989 ms per full run**.
-- Pairwise task-rank stability is weak: median Spearman **−0.123**, range **−0.701 to +0.434**.
+- The legacy pairwise task-rank statistic (median Spearman **−0.123**, range **−0.701 to +0.434**) is **UNRESOLVED**: the preregistration does not define its pairing/estimand. E520A's standard task_id-keyed pairwise duration-rank recomputation gives median **0.995652** (range **0.938261 to 1.000000**); see the audit below.
 - Holdout run totals range from **520.79 to 577.80 ms**; no run was discarded.
 
 ## Environment and telemetry
@@ -80,3 +80,18 @@ No code changed and no dedicated E520 collection/analysis workflow was run. PR C
 ## Next decisive gate
 
 Collect on at least two independently identified physical hosts, with host fingerprints captured before measurement, independent randomized task orders, real CPU-frequency/load/temperature telemetry, and realistic executable tasks. Do not spend another run fitting more same-host flexibility to this SHA256 microbenchmark.
+
+
+## E520A — task-rank metric reconciliation (13 November 2026)
+
+A raw-CSV re-analysis was added in `research/e520_task_rank_stability_audit.py`, using the pinned `research/results/e520_holdout_measurements.csv` and no external data.
+
+- Verified 144 rows, six complete holdout runs and 24 unique task IDs per run.
+- Within each run, Spearman(task_id, duration) is **0.952174 to 1.000000**; all six are at least 0.95.
+- Keying each run's 24 duration values by task_id and comparing every pair of runs gives 15 Spearman correlations with median **0.995652**, minimum **0.938261**, maximum **1.000000**.
+- Pooled Spearman(task_id, duration), using average ranks for repeated task IDs, is **0.984651**.
+- The previously reported median **−0.123443** and range **[−0.700954, +0.433735]** cannot be reproduced under this conventional pairwise task-duration rank definition. The preregistration names “task-rank stability” but does not define its estimand/pairing, and no committed E520 analysis code reproduces the legacy number. It is therefore retained as **UNRESOLVED**, not silently overwritten.
+
+**Correction:** do not claim weak task-duration rank stability. Under the standard task_id-keyed definition, task cost ordering is highly stable across runs. This is consistent with deterministic task-specific cost dominating, while the execution-position effect remains undetected. The primary E520 slope (−0.0047538) and permutation reference p=0.8185 are unchanged. This re-analysis does not establish independent physical hosts or a causal mechanism.
+
+The Foundry's independent raw-CSV recomputation passed **10/10 deterministic invariants**. The committed Python script was added to the draft branch; no GitHub Actions run was triggered because the included Actions-minute allowance is exhausted. Repository CI status is therefore unchanged.
