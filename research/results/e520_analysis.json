@@ -1,0 +1,125 @@
+{
+  "claim_boundary": {
+    "causal_mechanism": "NOT IDENTIFIED",
+    "cross_environment_transportability": "NOT SUPPORTED BY THIS SINGLE NEW ENVIRONMENT PROFILE",
+    "independent_physical_host_replication": "NOT MEASURED",
+    "real_task_scheduler_superiority": "NOT PROVEN",
+    "same_environment_order_effect": "NOT DETECTED IN THIS E520 COHORT"
+  },
+  "cohort": {
+    "observations": 144,
+    "runs": 6,
+    "tasks_per_run": 24
+  },
+  "comparison_to_E519": {
+    "E519_slope_per_full_run": -0.0523643,
+    "E519_within_run_permutation_reference_p": 0.0066,
+    "E520_slope_magnitude_ratio_to_E519": 0.09078384543319687,
+    "interpretation": "E520 slope is near zero, its permutation reference is non-small, and task/position sensitivity signs cross zero; E519's same-host negative association does not transport cleanly to this new execution-environment profile."
+  },
+  "experiment": "E520_CROSS_ENVIRONMENT_ORDER_REPLICATION",
+  "limitations": [
+    "This is a new execution environment profile, not authenticated independent physical-host replication; E516 did not record CPU model or host fingerprint.",
+    "The workload is a SHA256 CPU microbenchmark with synthetic rewards, not a real PCRO replay workload.",
+    "The 3/2 scale is inherited from the E516 protocol and was not retuned.",
+    "CPU model and visible CPU count are runtime-reported; CPU frequency sysfs and thermal sensors were not exposed.",
+    "Load average is namespace/container-level and mostly zero; it is not a reliable measure of host contention.",
+    "Calibration and holdouts share this runtime; six holdout runs are not six independent machines."
+  ],
+  "primary": {
+    "first_to_last_multiplicative_ratio": 0.995257449060394,
+    "model": "log(duration_ms) ~ task fixed effects + run fixed effects + normalized execution position",
+    "null_slope_quantiles_2_5_50_97_5": [
+      -0.03655504410546759,
+      0.000079939055638665,
+      0.036702501529474456
+    ],
+    "partial_r2_after_task_and_run_effects": 0.0005612477529494726,
+    "permutation_count": 9999,
+    "permutation_seed": 3844087847,
+    "slope_per_full_run": -0.004753832517417551,
+    "within_run_permutation_reference_p": 0.8185
+  },
+  "run_total_duration_ms": {
+    "holdout-000": 520.785623,
+    "holdout-001": 536.2558349999999,
+    "holdout-002": 528.463849,
+    "holdout-003": 531.66031,
+    "holdout-004": 577.800064,
+    "holdout-005": 554.0722390000001
+  },
+  "same_data_sensitivities": {
+    "all_leave_one_task_out_slopes_negative": false,
+    "all_position_trimming_slopes_negative": false,
+    "leave_one_run_out_slopes": {
+      "holdout-000": -0.001595849898685623,
+      "holdout-001": -0.013640867847985015,
+      "holdout-002": -0.01873123315908367,
+      "holdout-003": 0.0005499112302909532,
+      "holdout-004": 0.0037686708235894874,
+      "holdout-005": 0.0007485947867026345
+    },
+    "leave_one_task_out_slope_range": [
+      -0.018532527028796125,
+      0.006956260197194363
+    ],
+    "median_pairwise_task_rank_spearman": -0.12344267996967351,
+    "negative_positive_zero_run_slopes": {
+      "negative": 4,
+      "positive": 2,
+      "zero": 0
+    },
+    "pairwise_task_rank_spearman_range": [
+      -0.7009541714096962,
+      0.43373512603284853
+    ],
+    "position_trimming_slope_range": [
+      -0.03088420584015994,
+      0.012931003911050896
+    ],
+    "raw_duration_slope_ms_per_full_run": 0.14989140960099745,
+    "run_specific_log_slopes": {
+      "holdout-000": -0.017448035508342515,
+      "holdout-001": 0.01423167547625933,
+      "holdout-002": 0.03709773548215054,
+      "holdout-003": -0.013928589156887156,
+      "holdout-004": -0.026233533647076222,
+      "holdout-005": -0.019136410505896297
+    }
+  },
+  "status": "COMPLETE",
+  "task_rank_stability_reaudit": {
+    "experiment": "E520A",
+    "script": "research/e520_task_rank_stability_audit.py",
+    "source_csv": "research/results/e520_holdout_measurements.csv",
+    "rows": 144,
+    "runs": 6,
+    "tasks_per_run": 24,
+    "within_run_task_id_duration_spearman": {
+      "holdout-000": 0.9991304347826087,
+      "holdout-001": 0.9521739130434783,
+      "holdout-002": 1,
+      "holdout-003": 0.9973913043478261,
+      "holdout-004": 0.9947826086956522,
+      "holdout-005": 1
+    },
+    "pairwise_task_duration_rank_spearman": {
+      "pairs": 15,
+      "median": 0.9956521739130435,
+      "minimum": 0.9382608695652174,
+      "maximum": 1
+    },
+    "pooled_task_id_duration_spearman_average_ties": 0.9846510089368863,
+    "legacy_reported_statistic": {
+      "median": -0.12344267996967351,
+      "range": [
+        -0.7009541714096962,
+        0.43373512603284853
+      ],
+      "status": "UNRESOLVED_NOT_REPRODUCED_UNDER_STANDARD_PAIRWISE_DURATION_RANK",
+      "reason": "The preregistration does not define the task-rank stability pairing/estimand; no committed E520 analysis code reproduces this legacy statistic."
+    },
+    "validation": "Independent raw-CSV JavaScript recomputation passed 10/10 deterministic invariants; committed Python script not run by CI.",
+    "interpretation": "Task-duration ranks are highly stable under the conventional task_id-keyed pairwise definition; the legacy negative statistic is unresolved. E520 primary position slope and permutation result are unchanged."
+  }
+}
