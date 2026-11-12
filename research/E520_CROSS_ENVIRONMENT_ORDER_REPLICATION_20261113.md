@@ -75,7 +75,7 @@ Local validation passed:
 - Trace/catalog/measurement/telemetry/analysis hashes checked.
 - 9,999 permutation reference completed; leave-one-task and position-trimming checks completed.
 
-No code changed and no GitHub Actions run or CI pass is claimed. The collection wrapper was executed in the analysis runtime using a source-equivalent implementation of the pinned E516 workload; the E516 collector source blob is pinned in provenance. The exact E520 measurement data, timestamps, run telemetry, pre-registration, and analysis receipt are preserved here.
+No code changed and no dedicated E520 collection/analysis workflow was run. PR CI [#43292543163](https://github.com/stoicsatvik/pcro/actions/runs/43292543163) passed both repository jobs: Ruff, pytest, the 500-seed PCRO property run, and randomized JED evaluator parity. This is repository/evaluator validation only, not an E520 experiment replay. The collection wrapper was executed in the analysis runtime using a source-equivalent implementation of the pinned E516 workload; the E516 collector source blob is pinned in provenance. The exact E520 measurement data, timestamps, run telemetry, pre-registration, and analysis receipt are preserved here.
 
 ## Next decisive gate
 
